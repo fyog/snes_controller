@@ -2,15 +2,16 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "initGPIO.h"
-#define GPSET0 0
-#define GPCLR0 0
-#define GPLEV0 0
+#include "wiringPi.h"
 #define GPFSEL0 0
 #define GPFSEL1 1
+#define GPSET0 8
+#define GPCLR0 11
+#define GPLEV0 14
 #define LATCH 9
 #define DATA 10
 #define CLOCK 11
-#define CLO_REG 0xFE003004
+
 int main()
 {
 	// Get GPIO ptr
@@ -38,71 +39,58 @@ int main()
 		unsigned int buttons = 0;
     
 		// Write 1 to CLOCK
-		gpioPtr = gpioPtr + 28;
+		//gpioPtr = gpioPtr + 28;
 		int pinValue = (gpioPtr[GPSET0] &= (1 << CLOCK)) > 0;
-		printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
+		//printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
     
 		// Write 1 to LATCH
 		pinValue = (gpioPtr[GPSET0] &= (1 << LATCH)) > 0;
-		printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
+		//printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
     
 		// Wait 12 micro seconds
-		unsigned *clo = (unsigned*) CLO_REG;
-		unsigned c = *clo + 12; // micro seconds
-		while (c >* clo);
+		delayMicroseconds(12);
     
-		// Increment GPIO ptr
-		//gpioPtr = gpioPtr + 12;
-
 		// Write 0 to LATCH
-		//pinValue = (gpioPtr[GPCLR0] &= (1 << LATCH)) > 0;
+		pinValue = (gpioPtr[GPCLR0] &= (1 << LATCH)) > 0;
 		//printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
     
 		// Initialize counter
-		//int i;
+		int i;
 		
 		// Set bool to true
-		//while (i <= 16) {
-        
-			//printf("loop is running\n");
-        
+		while (i <= 16) {
+                
 			// Counter equals 1
-			//i = 1;
-        
-			// Get system clock
-			//*clo = (unsigned*) CLO_REG;
+			i = 1;
 		
 			// Wait 6 micro seconds
-			//c = *clo + 6; // micro seconds
-			//while (c >* clo);
+			delayMicroseconds(6);
+
     
 			// Write 0 to clock
-			//pinValue = (gpioPtr[GPCLR0] &= (1 << CLOCK)) > 0;
+			pinValue = (gpioPtr[GPCLR0] &= (1 << CLOCK)) > 0;
 			//printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
     
 			// Wait 6 micro seconds
-		//	c = *clo + 6; // micro seconds
-			//while (c >* clo);
-    
-			// Increment GPIO ptr
-			//gpioPtr = gpioPtr + 12;
+			delayMicroseconds(6);
     
 			// Read bit i
-			//pinValue = (gpioPtr[GPLEV0] >> DATA) & 1;
+			pinValue = (gpioPtr[GPLEV0] >> DATA) & 1;
 			//printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
     
 			// Set buttons register
-			//buttons &= pinValue;
-    
-			// Decrement GPIO ptr
-			//gpioPtr = gpioPtr - 12;
-    
+			buttons &= pinValue;
+        
 			// Write 0 to CLOCK
-			//pinValue = (gpioPtr[GPCLR0] &= (1 << LATCH)) > 0;
-	//		printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
+			pinValue = (gpioPtr[GPCLR0] &= (1 << LATCH)) > 0;
+			//printf("Address: %d\nPin Value: %d\n\n", gpioPtr, pinValue);
     
 			// Increment i
-		//	i += 1;
-		//}
+			i += 1;
+		}
+		pinValue = (buttons &= 1) > 0;
+		if (pinValue == 1) {
+			printf("B is being pressed...");
+		}
     }
 }
