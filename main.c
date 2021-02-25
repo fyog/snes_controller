@@ -22,7 +22,7 @@
 // Global variables
 unsigned int *gpioPtr;
 
-// Initializes the GPIO pins so that the SNES controller can communicate with the rPi.
+// Initializes the GPIO pins so that the SNES controller can communicate with the rPi
 //
 // argument(s): none
 // returns: nothing
@@ -44,7 +44,7 @@ void initSNES() {
 	INP_GPIO(DATA);
 }
 
-// Checks to see if any of the SNES controller buttons are being pressed.
+// Checks to see if any of the SNES controller buttons are being pressed
 //
 // argument(s): array of integers
 // returns: nothing
@@ -167,7 +167,7 @@ void runDriver() {
 	}
 }
 
-// Main method.
+// Main method
 //
 // argument(s): none
 // returns: nothing
