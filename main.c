@@ -101,7 +101,7 @@ void init_SNES() {
 	printf("Please press a button...\n");
 	printf("(Press START to exit)\n");
 	
-	// Wait 2 seconds
+	// Wait 2 seconds so the user can see the instructions
 	delay(2000);
 	
 	// Get GPIO ptr
@@ -122,7 +122,7 @@ void init_SNES() {
 // argument(s): array of integers
 // returns: nothing
 void print_Message(int buttons_arr[]) {
-	printf("Press a Button:\n");
+	printf("Press a Button (START to exit):\n");
 	
 	// Check if B is being pressed
 	if (buttons_arr[0] == 0) {
