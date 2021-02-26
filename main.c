@@ -21,34 +21,98 @@
 
 // Global variables
 unsigned int *gpioPtr;
+bool running = true;
+
+// Prints the authors of the program to the console
+//
+// argument(s): none
+// returns: nothing
+void print_Authors() {
+	printf("Created by: Matthew Newton and Eric Ross\n");
+}
+
+// Initializes a GPIO line
+//
+// argument(s): GPIO pin number, function code
+// returns: nothing
+void init_GPIO(int pinNumber, int functionCode) {
+	if (functionCode == 0b000) {
+		INP_GPIO(pinNumber);
+	} else {
+		INP_GPIO(pinNumber);
+		OUT_GPIO(pinNumber);
+	}
+}
+
+// Writes a bit to the LATCH line
+//
+// argument(s): bit value
+// returns: nothing
+void write_Latch(int bit) {
+	if (bit == 0) {
+		gpioPtr[GPCLR0] = (1 << LATCH);
+	} else if (bit == 1) {
+		gpioPtr[GPSET0] = (1 << LATCH);
+	}
+
+}
+
+// Writes a bit to the CLOCK line
+//
+// argument(s): bit value
+// returns: nothing
+void write_Clock(int bit) {
+	if (bit == 0) {
+		gpioPtr[GPCLR0] = (1 << CLOCK);
+	} else if (bit == 1) {
+		gpioPtr[GPSET0] = (1 << CLOCK);
+	}
+
+}
+
+// Reads a bit from the DATA line
+//
+// argument(s): none
+// returns: read bit value
+int read_Data() {
+	int pinValue = (gpioPtr[GPLEV0] >> DATA) & 1;    
+	return pinValue;
+}
 
 // Initializes the GPIO pins so that the SNES controller can communicate with the rPi
 //
 // argument(s): none
 // returns: nothing
-void initSNES() {
+void init_SNES() {
+	
+	// Clear the console
+	system("clear");
+
+	// Ask for input
+	printf("Please press a button...\n");
+	printf("(Press START to exit)\n");
+	
+	// Wait 2 second
+	delay(2000);
 	
 	// Get GPIO ptr
 	gpioPtr = getGPIOPtr();  
-	printf("pointer address: %p\n", gpioPtr);
 	
 	// Set LATCH to output
-	INP_GPIO(LATCH);
-	OUT_GPIO(LATCH);
+	init_GPIO(LATCH, 0b001);
     
 	// Set CLOCK to output
-	INP_GPIO(CLOCK);
-	OUT_GPIO(CLOCK);
+	init_GPIO(CLOCK, 0b001);
     
 	// Set DATA to input
-	INP_GPIO(DATA);
+	init_GPIO(DATA, 0b000);
 }
 
 // Checks to see if any of the SNES controller buttons are being pressed
 //
 // argument(s): array of integers
 // returns: nothing
-void checkButtons(int buttons_arr[]) {
+void print_Message(int buttons_arr[]) {
 	
 	// Check if B is being pressed
 	if (buttons_arr[0] == 0) {
@@ -67,7 +131,8 @@ void checkButtons(int buttons_arr[]) {
 	
 	// Check if START is being pressed
 	if (buttons_arr[3] == 0) {
-		printf("START is being pressed...\n");
+		printf("START is being pressed...\n");\
+		running = false;
 	}
 	
 	// Check if UP is being pressed
@@ -116,26 +181,26 @@ void checkButtons(int buttons_arr[]) {
 //
 // argument(s): none
 // returns: nothing
-void runDriver() {
+void read_SNES() {
 	
 	// Running loop
-	while (true){
+	while (running){
 
 		// Initialize array that will be used to track button presses
-		int buttons_arr[20];
+		int buttons_arr[16];
     
 		// Write 1 to LATCH
-		gpioPtr[GPSET0] = (1 << LATCH);
-    
+		write_Latch(1);
+		
 		// Wait 12 micro seconds
 		delayMicroseconds(12);
     
 		// Write 0 to LATCH
-		gpioPtr[GPCLR0] = (1 << LATCH);
-        
-		// Write 1 to CLOCK
-		gpioPtr[GPSET0] = 1 << CLOCK;
+		write_Latch(0);
 	
+		// Write 1 to CLOCK
+		write_Clock(1);
+		
 		// Initialize counter
 		int i = 1;
 		
@@ -146,24 +211,24 @@ void runDriver() {
 			delayMicroseconds(6);
 
 			// Write 0 to CLOCK
-			gpioPtr[GPCLR0] = 1 << CLOCK;
-    
+			write_Clock(0);
+			
 			// Wait 6 micro seconds
 			delayMicroseconds(6);
     
 			// Read bit i
-			int pinValue = (gpioPtr[GPLEV0] >> DATA) & 1;    
-        
+			int pinValue = read_Data();
+			
 			// Write 1 to CLOCK
-			gpioPtr[GPSET0] = (1 << CLOCK);
-            
+			write_Clock(1);
+			
 			// Set buttons_arr
 			buttons_arr[i-1] = pinValue;
     
 			// Increment i
 			i += 1;
 		}
-		checkButtons(buttons_arr);
+		 print_Message(buttons_arr);
 	}
 }
 
@@ -174,8 +239,8 @@ void runDriver() {
 int main() {
 	
 	// Initialize pins
-	initSNES();
+	init_SNES();
 	
 	// Run the driver
-	runDriver();
+	read_SNES();
 }
