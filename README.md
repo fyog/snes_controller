@@ -1,7 +1,10 @@
 # snes_controller
 SNES CONTROLLER
 
-Set up files in this way:
+This program is a driver for the SNES controller as per the specs for CPSC 359.
+This program will be used to control the frogger game in the future
+
+To set up the files in this way:
 
 > SNES folder
   makefile
@@ -12,3 +15,6 @@ Set up files in this way:
   > build folder
      main.o
      initGPIO.o
+     
+To compile type 'make' into the terminal.
+Then run ./myProg in the terminal.
