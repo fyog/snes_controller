@@ -1,3 +1,8 @@
+// This program is a driver for a SNES controller. It makes use of the Raspberry Pi's GPIO lines. It was completed
+// to fulfill the requirements laid out by Project Part 1, CPSC 359.
+//
+// Authors: Eric Ross (UCID: 10178538), Matthew Newton (UCID: 30094756)
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdbool.h>
