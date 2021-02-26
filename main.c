@@ -5,6 +5,7 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include "initGPIO.h"
 #include "wiringPi.h"
@@ -78,7 +79,7 @@ void write_Clock(int bit) {
 // Reads a bit from the DATA line
 //
 // argument(s): none
-// returns: read bit value
+// returns: read bit value                                                                                                                   
 int read_Data() {
 	int pinValue = (gpioPtr[GPLEV0] >> DATA) & 1;    
 	return pinValue;
@@ -93,6 +94,9 @@ void init_SNES() {
 	// Clear the console
 	system("clear");
 
+	//print authors 
+	print_Authors();
+	
 	// Ask for input
 	printf("Please press a button...\n");
 	printf("(Press START to exit)\n");
@@ -118,6 +122,7 @@ void init_SNES() {
 // argument(s): array of integers
 // returns: nothing
 void print_Message(int buttons_arr[]) {
+	printf("Press a Button:\n");
 	
 	// Check if B is being pressed
 	if (buttons_arr[0] == 0) {
@@ -248,4 +253,5 @@ int main() {
 	
 	// Run the driver
 	read_SNES();
+	printf("successfully exited\n");
 }
