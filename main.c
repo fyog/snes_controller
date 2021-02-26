@@ -92,7 +92,7 @@ void init_SNES() {
 	printf("Please press a button...\n");
 	printf("(Press START to exit)\n");
 	
-	// Wait 2 second
+	// Wait 2 seconds
 	delay(2000);
 	
 	// Get GPIO ptr
