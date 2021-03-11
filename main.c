@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <time.h>
 
 struct Player {
 	//char* name;
@@ -17,11 +18,10 @@ struct Player {
 struct Player playerOne;
 int board[32][32];
 
-// Main method
+// Initializes the player
 //
-// argument(s): none
+// argument(s): x location of the player, y location of the player
 // returns: nothing
-
 void init_Player(int locationX_par, int locationY_par) {
 	
 	//char f; 
@@ -83,7 +83,10 @@ void right(int currentX) {
 	} 
 }
 
-
+// Main method
+//
+// argument(s): none
+// returns: nothing
 int main() {
 	
 	// Create running boolean
@@ -92,31 +95,45 @@ int main() {
 	// Initialize pins
 	init_SNES();
 
+	// Initialize the board
+	init_Board(board);
 	// Initialize player
-	init_Player(16, 16);
+	init_Player(0, 31);
 	int sensitivity = 0;
-		
+	
+	// Get start time
+	time_t startTime = time(NULL);
+	
 	// Game loop
 	while (running) {
+		
+		// Get current time
+		time_t currentTime = time(NULL);
+		
+		// Print time elapsed
+		int timeElapsed = currentTime - startTime;
+		printf("%d s\n", timeElapsed);
 		
 		// Read from the controller
 		int* buttons_arr = read_SNES();
 		
 		// React to button presses
-		if (buttons_arr[4] == 0 && sensitivity % 40 == 0) {
-			up(playerOne.locationY);
-		} 
-		if (buttons_arr[5] == 0 && sensitivity % 40 == 0) {
-			down(playerOne.locationY);
-		} 
-		if (buttons_arr[6] == 0 && sensitivity % 40 == 0) {
-			left(playerOne.locationX);
-		} 
-		if (buttons_arr[7] == 0 && sensitivity % 40 == 0) {
-			right(playerOne.locationX);
-		}
-		if (buttons_arr[3] == 0) {
-			running = false;
+		if (sensitivity % 40 == 0) {
+			if (buttons_arr[4] == 0) {
+				up(playerOne.locationY);
+			} 
+			if (buttons_arr[5] == 0) {
+				down(playerOne.locationY);
+			} 
+			if (buttons_arr[6] == 0) {
+				left(playerOne.locationX);
+			} 
+			if (buttons_arr[7] == 0) {
+				right(playerOne.locationX);
+			}
+			if (buttons_arr[3] == 0) {
+				running = false;
+			}
 		}
 		
 		// Update the player's position
@@ -128,11 +145,17 @@ int main() {
 		// Print the player's current location
 		printf("Location X: %d\nLocation Y: %d\n", playerOne.locationX, playerOne.locationY);
 		
+		// Check for win
+		if (playerOne.locationY == 0) {
+			printf("You win!\n");
+			running = false;
+		}
+		
 		// Increment sensitivity counter
 		sensitivity += 1;
 	}
 	
 	// Print exit message
-	printf("successfully exited\n");
+	printf("Successfully exited.\n");
 
 }
