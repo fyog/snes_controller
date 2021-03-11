@@ -152,6 +152,12 @@ int main() {
 			running = false;
 		}
 		
+		// Check for out of time
+		if (timeRemaining <= 0) {
+			printf("Out of time!\n");
+			running = false;
+		}
+		
 		// Increment sensitivity counter
 		sensitivity += 1;
 	}
