@@ -112,7 +112,8 @@ int main() {
 		
 		// Print time elapsed
 		int timeElapsed = currentTime - startTime;
-		printf("%d s\n", timeElapsed);
+		int timeRemaining = 90 - timeElapsed;
+		printf("%d s\n", timeRemaining);
 		
 		// Read from the controller
 		int* buttons_arr = read_SNES();
