@@ -261,12 +261,14 @@ int main() {
 			board[transporter_one.locationY][transporter_one.locationX] = '-';
 			transporter_one.locationY += 1;
 			if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
 			}
 		} else if (sensitivity % 100 == 50) {
 			board[transporter_one.locationY][transporter_one.locationX] = '-';
 			transporter_one.locationY -= 1;
 			if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
 			}
 		}
