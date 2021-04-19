@@ -1,5 +1,5 @@
-// This program is a driver for a SNES controller. It makes use of the Raspberry Pi's GPIO lines. It was completed
-// to fulfill the requirements laid out by Project Part 1, CPSC 359.
+// This program runs the game Frogger. It makes use of the Raspberry Pi's GPIO lines. It was completed
+// to fulfill the requirements laid out by Project Part 2, CPSC 359.
 //
 // Authors: Eric Ross (UCID: 10178538), Matthew Newton (UCID: 30094756)
 
@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <time.h>
+#include "controller_driver.h"
+#include "board.h"
+#include <pthread.h>
 
 struct Player {
 	//char* name;
@@ -14,21 +17,27 @@ struct Player {
 	int locationY;
 };
 
+struct Obstacle {
+	int locationX;
+	int locationY;
+};
+
 //Global variables
 struct Player playerOne;
-int board[32][32];
+char board[32][32];
+
+// Player methods -------------------------------------------------------------------------------
 
 // Initializes the player
 //
 // argument(s): x location of the player, y location of the player
 // returns: nothing
-void init_Player(int locationX_par, int locationY_par) {
-	
+void init_Player(int locationX_par, int locationY_par ) {
 	//char f; 
 	//playerOne.name = &f;
 	playerOne.locationX = locationX_par;
 	playerOne.locationY = locationY_par;
-	board[locationY_par][locationX_par] = 1;
+	board[locationY_par][locationX_par] = 'X';
 }
 
 // Updates the player's position
@@ -36,7 +45,7 @@ void init_Player(int locationX_par, int locationY_par) {
 // argument(s): none
 // returns: nothing
 void update_Player() {
-	board[playerOne.locationY][playerOne.locationX] = 1;
+	board[playerOne.locationY][playerOne.locationX] = 'X';
 }
 	
 // Moves the player down
@@ -45,7 +54,7 @@ void update_Player() {
 // returns: nothing
 void down(int currentY) {
 	if (currentY < 31) {
-		board[playerOne.locationY][playerOne.locationX] = 0;
+		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationY = currentY + 1;
 	} 
 }
@@ -56,7 +65,7 @@ void down(int currentY) {
 // returns: nothing
 void up (int currentY) {
 	if (currentY > 0) {
-		board[playerOne.locationY][playerOne.locationX] = 0;
+		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationY = currentY - 1;
 	}
 }
@@ -67,7 +76,7 @@ void up (int currentY) {
 // returns: nothing
 void left(int currentX) {
 	if (currentX > 0) {
-		board[playerOne.locationY][playerOne.locationX] = 0;
+		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationX = currentX - 1;
 	} 
 }
@@ -78,10 +87,44 @@ void left(int currentX) {
 // returns: nothing
 void right(int currentX) {
 	if (currentX < 31) {
-		board[playerOne.locationY][playerOne.locationX] = 0;
+		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationX = currentX + 1;
 	} 
 }
+
+// Obstacle methods -----------------------------------------------------------------------------
+
+struct Obstacle init_Obstacle (int positionX_par, int positionY_par) {
+	struct Obstacle obstacle;
+	obstacle.locationX = positionX_par;
+	obstacle.locationY = positionY_par;
+	board[positionY_par][positionX_par] = '@';
+	return obstacle;
+}
+
+// Move method
+void move(struct Obstacle obstacle, bool up, bool down, bool left, bool right) {
+	if (up == true) {
+		board[obstacle.locationY][obstacle.locationX] = '-';
+		obstacle.locationY += 1;
+	} else if (down == true) {
+		board[obstacle.locationY][obstacle.locationX] = '-';
+		obstacle.locationY -= 1;
+	} else if (left == true) {
+		board[obstacle.locationY][obstacle.locationX] = '-';
+		obstacle.locationX -= 1;
+	} else if (right == true) {
+		board[obstacle.locationY][obstacle.locationX] = '-';
+		obstacle.locationX += 1;
+	} 
+}
+
+// Update method
+void update_Obstacle(struct Obstacle obstacle) {
+	board[obstacle.locationY][obstacle.locationX] = '@';
+}	
+
+// Game loop -----------------------------------------------------------------------------------
 
 // Main method
 //
@@ -97,8 +140,14 @@ int main() {
 
 	// Initialize the board
 	init_Board(board);
+	
 	// Initialize player
 	init_Player(0, 31);
+	
+	// Initialize the obstacles
+	struct Obstacle obstacle_one = init_Obstacle(16,16);
+	
+	// Initialize sensitivity counter
 	int sensitivity = 0;
 	
 	// Get start time
@@ -110,7 +159,7 @@ int main() {
 		// Get current time
 		time_t currentTime = time(NULL);
 		
-		// Print time elapsed
+		// Print time remaining
 		int timeElapsed = currentTime - startTime;
 		int timeRemaining = 90 - timeElapsed;
 		printf("%d s\n", timeRemaining);
@@ -138,13 +187,31 @@ int main() {
 		}
 		
 		// Update the player's position
-		update_Player(&board[0][0]);
+		update_Player(board);
+		
+		// Alter the obstacle's position
+		if (sensitivity % 20 == 0) {
+			board[obstacle_one.locationY][obstacle_one.locationX] = '-';
+			obstacle_one.locationY += 1;
+		} else if (sensitivity % 20 == 10) {
+			board[obstacle_one.locationY][obstacle_one.locationX] = '-';
+			obstacle_one.locationY -= 1;
+		}
+		
+		// Update the obstacle
+		update_Obstacle(obstacle_one);
 		
 		// Print the board
-		print_Board(&board[0][0]);
+		print_Board(board);
 		
 		// Print the player's current location
-		printf("Location X: %d\nLocation Y: %d\n", playerOne.locationX, playerOne.locationY);
+		printf("Location X: %d\nLocation Y: %d\n", playerOne.locationX, obstacle_one.locationY);
+		
+		// Check for collisions
+		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
+			running = false;
+			printf("You died! Try again\n");
+		}
 		
 		// Check for win
 		if (playerOne.locationY == 0) {
