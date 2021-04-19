@@ -11,6 +11,7 @@
 #include "board.h"
 #include <pthread.h>
 
+// Structure definitions
 struct Player {
 	//char* name;
 	int locationX;
@@ -22,9 +23,15 @@ struct Obstacle {
 	int locationY;
 };
 
+struct Transporter {
+	int locationX;
+	int locationY;
+};
+
 //Global variables
 struct Player playerOne;
 char board[32][32];
+bool playerOnLog;
 
 // Player methods -------------------------------------------------------------------------------
 
@@ -94,7 +101,7 @@ void right(int currentX) {
 
 // Obstacle methods -----------------------------------------------------------------------------
 
-struct Obstacle init_Obstacle (int positionX_par, int positionY_par) {
+struct Obstacle init_Obstacle(int positionX_par, int positionY_par) {
 	struct Obstacle obstacle;
 	obstacle.locationX = positionX_par;
 	obstacle.locationY = positionY_par;
@@ -124,6 +131,54 @@ void update_Obstacle(struct Obstacle obstacle) {
 	board[obstacle.locationY][obstacle.locationX] = '@';
 }	
 
+// Transporter methods -------------------------------------------------------------------------
+
+struct Transporter init_Transporter(int positionX_par, int positionY_par) {
+	struct Transporter transporter;
+	transporter.locationX = positionX_par;
+	transporter.locationY = positionY_par;
+	board[transporter.locationY][transporter.locationX] = 'U';
+	return transporter;
+}
+
+// Move method
+void move_Transporter(struct Transporter transporter, bool up, bool down, bool left, bool right) {
+	if (up == true) {
+		board[transporter.locationY][transporter.locationX] = '-';
+		transporter.locationY += 1;
+		if (playerOnLog == true) {
+			playerOne.locationY += 1;
+		}
+	} else if (down == true) {
+		board[transporter.locationY][transporter.locationX] = '-';
+		transporter.locationY -= 1;
+		if (playerOnLog == true) {
+			playerOne.locationY -= 1;
+		}
+	} else if (left == true) {
+		board[transporter.locationY][transporter.locationX] = '-';
+		transporter.locationX -= 1;
+		if (playerOnLog == true) {
+			playerOne.locationX -= 1;
+		}
+	} else if (right == true) {
+		board[transporter.locationY][transporter.locationX] = '-';
+		transporter.locationX += 1;
+		if (playerOnLog == true) {
+			playerOne.locationX+= 1;
+		}
+	}
+}
+
+void update_Transporter(struct Transporter transporter) {
+	if (playerOnLog) {
+		board[transporter.locationY][transporter.locationX] = 'O';
+	} else if (!playerOnLog) {
+		board[transporter.locationY][transporter.locationX] = 'U';
+	}
+}
+
+
 // Game loop -----------------------------------------------------------------------------------
 
 // Main method
@@ -145,7 +200,10 @@ int main() {
 	init_Player(0, 31);
 	
 	// Initialize the obstacles
-	struct Obstacle obstacle_one = init_Obstacle(16,16);
+	struct Obstacle obstacle_one = init_Obstacle(16, 16);
+	
+	// Initialize the transporters
+	struct Transporter transporter_one = init_Transporter(10, 10);
 	
 	// Initialize sensitivity counter
 	int sensitivity = 0;
@@ -188,7 +246,7 @@ int main() {
 		
 		// Update the player's position
 		update_Player(board);
-		
+	
 		// Alter the obstacle's position
 		if (sensitivity % 20 == 0) {
 			board[obstacle_one.locationY][obstacle_one.locationX] = '-';
@@ -198,19 +256,42 @@ int main() {
 			obstacle_one.locationY -= 1;
 		}
 		
+		// Alter the transporter's position
+		if (sensitivity % 100 == 0) {
+			board[transporter_one.locationY][transporter_one.locationX] = '-';
+			transporter_one.locationY += 1;
+			if (playerOnLog) {
+				playerOne.locationY = transporter_one.locationY;
+			}
+		} else if (sensitivity % 100 == 50) {
+			board[transporter_one.locationY][transporter_one.locationX] = '-';
+			transporter_one.locationY -= 1;
+			if (playerOnLog) {
+				playerOne.locationY = transporter_one.locationY;
+			}
+		}
+	
+		
 		// Update the obstacle
 		update_Obstacle(obstacle_one);
+	
+		// Update the transporter
+		update_Transporter(transporter_one);
 		
 		// Print the board
 		print_Board(board);
-		
-		// Print the player's current location
-		printf("Location X: %d\nLocation Y: %d\n", playerOne.locationX, obstacle_one.locationY);
 		
 		// Check for collisions
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
 			running = false;
 			printf("You died! Try again\n");
+		}
+		
+		// Check if player on log
+		if (playerOne.locationX == transporter_one.locationX && playerOne.locationY == transporter_one.locationY) {
+			playerOnLog = true;
+		} else {
+			playerOnLog = false;
 		}
 		
 		// Check for win
