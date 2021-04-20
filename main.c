@@ -142,34 +142,38 @@ struct Transporter init_Transporter(int positionX_par, int positionY_par) {
 }
 
 // Move method
-void move_Transporter(struct Transporter transporter, bool up, bool down, bool left, bool right) {
-	if (up == true) {
-		board[transporter.locationY][transporter.locationX] = '-';
-		transporter.locationY += 1;
-		if (playerOnLog == true) {
-			playerOne.locationY += 1;
-		}
-	} else if (down == true) {
-		board[transporter.locationY][transporter.locationX] = '-';
-		transporter.locationY -= 1;
-		if (playerOnLog == true) {
-			playerOne.locationY -= 1;
-		}
-	} else if (left == true) {
-		board[transporter.locationY][transporter.locationX] = '-';
-		transporter.locationX -= 1;
-		if (playerOnLog == true) {
-			playerOne.locationX -= 1;
-		}
-	} else if (right == true) {
-		board[transporter.locationY][transporter.locationX] = '-';
-		transporter.locationX += 1;
-		if (playerOnLog == true) {
-			playerOne.locationX+= 1;
-		}
-	}
+void move_Transporter(struct Transporter transporter_par, int up, int down, int left, int right) {
+	//if (up > 0) {
+	board[transporter_par.locationY][transporter_par.locationX] = '-';
+	transporter_par.locationY += up;
+		printf("ACTIVATED");
+	//	printf("%d", transporter_par.locationX);
+	//	if (playerOnLog) {
+	//		playerOne.locationY += up;
+	//	}
+	//} else if (down > 0) {
+	//	board[transporter_par.locationY][transporter_par.locationX] = '-';
+	//	transporter_par.locationY -= down;
+	//	if (playerOnLog) {
+	//		playerOne.locationY -= down;
+	//	}
+	//} else if (left > 0) {
+	//	board[transporter_par.locationY][transporter_par.locationX] = '-';
+	//	transporter_par.locationX -= left;
+	//	if (playerOnLog) {
+	//		playerOne.locationX -= left;
+	//	}
+	//} else if (right > 0) {
+	//	board[transporter_par.locationY][transporter_par.locationX] = '-';
+	//	transporter_par.locationX += right;
+	//	if (playerOnLog) {
+	//		playerOne.locationX+= right;
+	//	}
+	// }
+	return;
 }
 
+// Update method
 void update_Transporter(struct Transporter transporter) {
 	if (playerOnLog) {
 		board[transporter.locationY][transporter.locationX] = 'O';
@@ -177,7 +181,6 @@ void update_Transporter(struct Transporter transporter) {
 		board[transporter.locationY][transporter.locationX] = 'U';
 	}
 }
-
 
 // Game loop -----------------------------------------------------------------------------------
 
@@ -226,7 +229,7 @@ int main() {
 		int* buttons_arr = read_SNES();
 		
 		// React to button presses
-		if (sensitivity % 40 == 0) {
+		if (sensitivity % 20 == 0) {
 			if (buttons_arr[4] == 0) {
 				up(playerOne.locationY);
 			} 
@@ -243,9 +246,6 @@ int main() {
 				running = false;
 			}
 		}
-		
-		// Update the player's position
-		update_Player(board);
 	
 		// Alter the obstacle's position
 		if (sensitivity % 20 == 0) {
@@ -258,21 +258,26 @@ int main() {
 		
 		// Alter the transporter's position
 		if (sensitivity % 100 == 0) {
-			board[transporter_one.locationY][transporter_one.locationX] = '-';
-			transporter_one.locationY += 1;
+			//board[transporter_one.locationY][transporter_one.locationX] = '-';
+			//transporter_one.locationY += 1;
+			move_Transporter(transporter_one, 1, 0, 0, 0);
+			printf("ACTIVATED"); 
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
 			}
 		} else if (sensitivity % 100 == 50) {
 			board[transporter_one.locationY][transporter_one.locationX] = '-';
+			//move_Transporter(transporter_one, 0, 1, 0, 0);
 			transporter_one.locationY -= 1;
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
 			}
 		}
-	
+		
+		// Update the player's position
+		update_Player(board);
 		
 		// Update the obstacle
 		update_Obstacle(obstacle_one);
