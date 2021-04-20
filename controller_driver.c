@@ -230,5 +230,28 @@ int* read_SNES() {
 		print_Message(buttons_arr);
 		return buttons_arr;
 }
+void*run(int* sensitivity) {
+	bool running = true;
+	while (running) {
+		int* buttons_arr = read_SNES();
+		if (sensitivity % 20 == 0) {
+			if (buttons_arr[4] == 0) {
+				up(playerOne.locationY);
+			} 
+				if (buttons_arr[5] == 0) {
+					down(playerOne.locationY);
+				} 
+				if (buttons_arr[6] == 0) {
+					left(playerOne.locationX);
+				} 
+				if (buttons_arr[7] == 0) {
+					right(playerOne.locationX);
+				}
+				if (buttons_arr[3] == 0) {
+					running = false;
+				}
+		}
+	}
+}
 
 

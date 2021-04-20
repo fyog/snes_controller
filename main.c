@@ -252,29 +252,21 @@ int main() {
 	
 		// Alter the obstacle's position
 		if (sensitivity % 20 == 0) {
-			//board[obstacle_one.locationY][obstacle_one.locationX] = '-';
-			//obstacle_one.locationY += 1;
 			obstacle_one = move_Obstacle(obstacle_one, 1, 0, 0, 0);
 		} else if (sensitivity % 20 == 10) {
-			//board[obstacle_one.locationY][obstacle_one.locationX] = '-';
-			//obstacle_one.locationY -= 1;
 			obstacle_one = move_Obstacle(obstacle_one, 1, 0, 0, 0);
 
 		}
 		
 		// Alter the transporter's position
 		if (sensitivity % 100 == 0) {
-			//board[transporter_one.locationY][transporter_one.locationX] = '-';
-			//transporter_one.locationY += 1;
 			transporter_one = move_Transporter(transporter_one, 1, 0, 0, 0);
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
 			}
 		} else if (sensitivity % 100 == 50) {
-			//board[transporter_one.locationY][transporter_one.locationX] = '-';
 			transporter_one = move_Transporter(transporter_one, 0, 1, 0, 0);
-			//transporter_one.locationY -= 1;
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
@@ -295,8 +287,10 @@ int main() {
 		
 		// Check for collisions
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
-			running = false;
 			printf("You died! Try again\n");
+			running = false;
+			return;
+
 		}
 		
 		// Check if player on log
