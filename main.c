@@ -110,7 +110,7 @@ struct Obstacle init_Obstacle(int positionX_par, int positionY_par) {
 }
 
 // Move method
-void move(struct Obstacle obstacle, bool up, bool down, bool left, bool right) {
+struct Obstacle move_Obstacle(struct Obstacle obstacle, bool up, bool down, bool left, bool right) {
 	if (up == true) {
 		board[obstacle.locationY][obstacle.locationX] = '-';
 		obstacle.locationY += 1;
@@ -123,7 +123,8 @@ void move(struct Obstacle obstacle, bool up, bool down, bool left, bool right) {
 	} else if (right == true) {
 		board[obstacle.locationY][obstacle.locationX] = '-';
 		obstacle.locationX += 1;
-	} 
+	}
+	return obstacle;
 }
 
 // Update method
@@ -240,7 +241,7 @@ int main() {
 				right(playerOne.locationX);
 			}
 			if (buttons_arr[3] == 0) {
-				//running = false;
+				running = false;
 			}
 		}
 		
@@ -251,18 +252,21 @@ int main() {
 	
 		// Alter the obstacle's position
 		if (sensitivity % 20 == 0) {
-			board[obstacle_one.locationY][obstacle_one.locationX] = '-';
-			obstacle_one.locationY += 1;
+			//board[obstacle_one.locationY][obstacle_one.locationX] = '-';
+			//obstacle_one.locationY += 1;
+			obstacle_one = move_Obstacle(obstacle_one, 1, 0, 0, 0);
 		} else if (sensitivity % 20 == 10) {
-			board[obstacle_one.locationY][obstacle_one.locationX] = '-';
-			obstacle_one.locationY -= 1;
+			//board[obstacle_one.locationY][obstacle_one.locationX] = '-';
+			//obstacle_one.locationY -= 1;
+			obstacle_one = move_Obstacle(obstacle_one, 1, 0, 0, 0);
+
 		}
 		
 		// Alter the transporter's position
 		if (sensitivity % 100 == 0) {
 			//board[transporter_one.locationY][transporter_one.locationX] = '-';
 			//transporter_one.locationY += 1;
-			transporter_one = move_Transporter(transporter_one, 5, 0, 0, 0);
+			transporter_one = move_Transporter(transporter_one, 1, 0, 0, 0);
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
@@ -291,7 +295,7 @@ int main() {
 		
 		// Check for collisions
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
-			//running = false;
+			running = false;
 			printf("You died! Try again\n");
 		}
 		
@@ -305,13 +309,13 @@ int main() {
 		// Check for win
 		if (playerOne.locationY == 0) {
 			printf("You win!\n");
-			//running = false;
+			running = false;
 		}
 		
 		// Check for out of time
 		if (timeRemaining <= 0) {
 			printf("Out of time!\n");
-			//running = false;
+			running = false;
 		}
 		
 		// Increment sensitivity counter
