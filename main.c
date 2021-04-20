@@ -200,6 +200,10 @@ int main() {
 	// Initialize player
 	init_Player(0, 31);
 	
+	// Initialize controller thread
+	//pthread_t controller_Thread;
+	
+	//pthread_create(&controller_Thread, NULL, run, NULL);
 	// Initialize the obstacles
 	struct Obstacle obstacle_one = init_Obstacle(16, 16);
 	
@@ -219,7 +223,7 @@ int main() {
 		time_t currentTime = time(NULL);
 		
 		// Read from the controller
-		int* buttons_arr = read_SNES();
+	int* buttons_arr = read_SNES();
 		
 		// React to button presses
 		if (sensitivity % 20 == 0) {
@@ -258,7 +262,7 @@ int main() {
 		if (sensitivity % 100 == 0) {
 			//board[transporter_one.locationY][transporter_one.locationX] = '-';
 			//transporter_one.locationY += 1;
-			transporter_one = move_Transporter(transporter_one, 1, 0, 0, 0);
+			transporter_one = move_Transporter(transporter_one, 5, 0, 0, 0);
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
