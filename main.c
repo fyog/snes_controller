@@ -142,35 +142,33 @@ struct Transporter init_Transporter(int positionX_par, int positionY_par) {
 }
 
 // Move method
-void move_Transporter(struct Transporter transporter_par, int up, int down, int left, int right) {
-	//if (up > 0) {
+struct Transporter move_Transporter(struct Transporter transporter_par, int up, int down, int left, int right) {
+	if (up > 0) {
 	board[transporter_par.locationY][transporter_par.locationX] = '-';
 	transporter_par.locationY += up;
-		printf("ACTIVATED");
-	//	printf("%d", transporter_par.locationX);
-	//	if (playerOnLog) {
-	//		playerOne.locationY += up;
-	//	}
-	//} else if (down > 0) {
-	//	board[transporter_par.locationY][transporter_par.locationX] = '-';
-	//	transporter_par.locationY -= down;
-	//	if (playerOnLog) {
-	//		playerOne.locationY -= down;
-	//	}
-	//} else if (left > 0) {
-	//	board[transporter_par.locationY][transporter_par.locationX] = '-';
-	//	transporter_par.locationX -= left;
-	//	if (playerOnLog) {
-	//		playerOne.locationX -= left;
-	//	}
-	//} else if (right > 0) {
-	//	board[transporter_par.locationY][transporter_par.locationX] = '-';
-	//	transporter_par.locationX += right;
-	//	if (playerOnLog) {
-	//		playerOne.locationX+= right;
-	//	}
-	// }
-	return;
+		if (playerOnLog) {
+			playerOne.locationY += up;
+		}
+	} else if (down > 0) {
+		board[transporter_par.locationY][transporter_par.locationX] = '-';
+		transporter_par.locationY -= down;
+		if (playerOnLog) {
+			playerOne.locationY -= down;
+		}
+	} else if (left > 0) {
+		board[transporter_par.locationY][transporter_par.locationX] = '-';
+		transporter_par.locationX -= left;
+		if (playerOnLog) {
+			playerOne.locationX -= left;
+		}
+	} else if (right > 0) {
+		board[transporter_par.locationY][transporter_par.locationX] = '-';
+		transporter_par.locationX += right;
+		if (playerOnLog) {
+			playerOne.locationX += right;
+		}
+	 }
+	return transporter_par;
 }
 
 // Update method
@@ -220,11 +218,6 @@ int main() {
 		// Get current time
 		time_t currentTime = time(NULL);
 		
-		// Print time remaining
-		int timeElapsed = currentTime - startTime;
-		int timeRemaining = 90 - timeElapsed;
-		printf("%d s\n", timeRemaining);
-		
 		// Read from the controller
 		int* buttons_arr = read_SNES();
 		
@@ -243,9 +236,14 @@ int main() {
 				right(playerOne.locationX);
 			}
 			if (buttons_arr[3] == 0) {
-				running = false;
+				//running = false;
 			}
 		}
+		
+		// Print time remaining
+		int timeElapsed = currentTime - startTime;
+		int timeRemaining = 90 - timeElapsed;
+		printf("%d s\n", timeRemaining);
 	
 		// Alter the obstacle's position
 		if (sensitivity % 20 == 0) {
@@ -260,16 +258,15 @@ int main() {
 		if (sensitivity % 100 == 0) {
 			//board[transporter_one.locationY][transporter_one.locationX] = '-';
 			//transporter_one.locationY += 1;
-			move_Transporter(transporter_one, 1, 0, 0, 0);
-			printf("ACTIVATED"); 
+			transporter_one = move_Transporter(transporter_one, 1, 0, 0, 0);
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
 			}
 		} else if (sensitivity % 100 == 50) {
-			board[transporter_one.locationY][transporter_one.locationX] = '-';
-			//move_Transporter(transporter_one, 0, 1, 0, 0);
-			transporter_one.locationY -= 1;
+			//board[transporter_one.locationY][transporter_one.locationX] = '-';
+			transporter_one = move_Transporter(transporter_one, 0, 1, 0, 0);
+			//transporter_one.locationY -= 1;
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
@@ -290,7 +287,7 @@ int main() {
 		
 		// Check for collisions
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
-			running = false;
+			//running = false;
 			printf("You died! Try again\n");
 		}
 		
@@ -304,13 +301,13 @@ int main() {
 		// Check for win
 		if (playerOne.locationY == 0) {
 			printf("You win!\n");
-			running = false;
+			//running = false;
 		}
 		
 		// Check for out of time
 		if (timeRemaining <= 0) {
 			printf("Out of time!\n");
-			running = false;
+			//running = false;
 		}
 		
 		// Increment sensitivity counter
