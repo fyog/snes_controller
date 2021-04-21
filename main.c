@@ -4,9 +4,12 @@
 // Authors: Eric Ross (UCID: 10178538), Matthew Newton (UCID: 30094756)
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <time.h>
+#include <sys/mman.h>
+#include "framebuffer.h"
 #include "controller_driver.h"
 #include "board.h"
 #include <pthread.h>
@@ -28,10 +31,19 @@ struct Transporter {
 	int locationY;
 };
 
+typedef struct {
+	int color;
+	int x, y;
+} Pixel;
+
+struct fbs fbstruct;
+
 //Global variables
 struct Player playerOne;
 char board[32][32];
 bool playerOnLog;
+
+int drawColours[32][32];
 
 // Player methods -------------------------------------------------------------------------------
 
@@ -181,6 +193,103 @@ void update_Transporter(struct Transporter transporter) {
 	}
 }
 
+
+/* Draw a pixel */
+void drawPixel(Pixel *pixel){
+	long int location = (pixel->x +fbstruct.xOff) * (fbstruct.bits/8) +
+                       (pixel->y+fbstruct.yOff) * fbstruct.lineLength;
+	*((unsigned short int*)(fbstruct.fptr + location)) = pixel->color;
+}
+
+/*
+*Draw Map
+*
+*
+*/
+void init_map(){
+	fbstruct = initFbInfo();
+	
+	Pixel *pixel;
+	pixel = malloc(sizeof(pixel));
+	
+	int ycount = 0;
+	int xcount = 0;
+	
+	for (int y = 0; y < 1024; y++)
+	{
+		if(y % 32 == 0 && ycount < 32 && y != 0){
+			ycount++;
+		}
+		for (int x = 0; x < 1024; x++) 
+		{	
+				if(x % 32 == 0 && xcount < 32 && x != 0){
+					xcount++;
+				}
+				pixel->color = drawColours[ycount][xcount]; // pixel
+				pixel->x = x;
+				pixel->y = y;
+	
+				drawPixel(pixel);
+		}
+		xcount = 0;
+		
+	}
+	/* free pixel's allocated memory */
+	free(pixel);
+	pixel = NULL;
+	munmap(fbstruct.fptr, fbstruct.screenSize);
+
+	
+}
+
+void block_draw(int mul, int mul2, int colour){
+	fbstruct = initFbInfo();
+	
+	Pixel *pixel;
+	pixel = malloc(sizeof(pixel));
+	int xstart = 32 * mul;
+	int ystart = 32 * mul2;
+	//printf("xstart %d\n", xstart);
+	//printf("ystart %d\n", ystart);
+	
+	for (int y = ystart; y < ystart + 32; y++)
+	{
+		for (int x = xstart; x < xstart + 32; x++) 
+		{	
+				pixel->color = colour; // black pixel
+				pixel->x = x;
+				pixel->y = y;
+	
+				drawPixel(pixel);
+		}
+	}
+	/* free pixel's allocated memory */
+	free(pixel);
+	pixel = NULL;
+	munmap(fbstruct.fptr, fbstruct.screenSize);
+	
+}
+
+void draw_map(){
+	
+	for(int i = 0; i < 32; i++){
+		for(int j = 0; j < 32; j++){
+			if(board[i][j] != '-'){
+				drawColours[i][j] = 0x0000;
+				//printf("colour 1: %d\n", drawColours[i][j]);
+				//block_draw(i, j, 0x0000);//drawColours[i][j] = 0xF800;
+			}else{
+				//init_map(i, j, 0xF800);
+				drawColours[i][j] = 0xF800;
+				//printf("colour 2: %d\n", drawColours[i][j]);
+			}
+			
+		}
+	}
+	init_map();
+	
+}
+
 // Game loop -----------------------------------------------------------------------------------
 
 // Main method
@@ -201,6 +310,9 @@ int main() {
 	// Initialize player
 	init_Player(0, 31);
 	
+	//initialize map
+	//init_map();
+	
 	// Initialize controller thread
 	//pthread_t controller_Thread;
 	
@@ -217,6 +329,7 @@ int main() {
 	// Get start time
 	time_t startTime = time(NULL);
 	
+	
 	// Game loop
 	while (running) {
 		
@@ -227,7 +340,7 @@ int main() {
 	int* buttons_arr = read_SNES();
 		
 		// React to button presses
-		if (sensitivity % 20 == 0) {
+		if (sensitivity % 4 == 0) {
 			if (buttons_arr[4] == 0) {
 				up(playerOne.locationY);
 			} 
@@ -248,13 +361,13 @@ int main() {
 		// Print time remaining
 		int timeElapsed = currentTime - startTime;
 		int timeRemaining = 90 - timeElapsed;
-		printf("%d s\n", timeRemaining);
+		//printf("%d s\n", timeRemaining);
 	
 		// Alter the obstacle's position
 		if (sensitivity % 20 == 0) {
 			obstacle_one = move_Obstacle(obstacle_one, 1, 0, 0, 0);
 		} else if (sensitivity % 20 == 10) {
-			obstacle_one = move_Obstacle(obstacle_one, 1, 0, 0, 0);
+			obstacle_one = move_Obstacle(obstacle_one, 0, 1, 0, 0);
 
 		}
 		
@@ -283,7 +396,10 @@ int main() {
 		update_Transporter(transporter_one);
 		
 		// Print the board
-		print_Board(board);
+		//print_Board(board);
+		
+		//init_map();
+		draw_map();
 		
 		// Check for collisions
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
