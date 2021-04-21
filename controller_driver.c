@@ -86,7 +86,7 @@ int read_Data() {
 void init_SNES() {
 	
 	// Clear the console
-	system("clear");
+	//system("clear");
 
 	//print authors 
 	print_Authors();
@@ -176,7 +176,7 @@ void print_Message(int buttons_arr[]) {
 	if (buttons_arr[11] == 0) {
 		printf("R is being pressed...\n");
 	}
-	system("clear");
+	//system("clear");
 }
 
 // Starts execution of the SNES controller driver
@@ -227,31 +227,6 @@ int* read_SNES() {
 			// Increment i
 			i += 1;
 		}
-		print_Message(buttons_arr);
+		//print_Message(buttons_arr);
 		return buttons_arr;
 }
-void*run(int* sensitivity) {
-	bool running = true;
-	while (running) {
-		int* buttons_arr = read_SNES();
-		if (sensitivity % 20 == 0) {
-			if (buttons_arr[4] == 0) {
-				up(playerOne.locationY);
-			} 
-				if (buttons_arr[5] == 0) {
-					down(playerOne.locationY);
-				} 
-				if (buttons_arr[6] == 0) {
-					left(playerOne.locationX);
-				} 
-				if (buttons_arr[7] == 0) {
-					right(playerOne.locationX);
-				}
-				if (buttons_arr[3] == 0) {
-					running = false;
-				}
-		}
-	}
-}
-
-

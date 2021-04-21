@@ -71,7 +71,7 @@ void down(int currentY) {
 // argument(s): current y position of the player
 // returns: nothing
 void up (int currentY) {
-	if (currentY > 0) {
+	if (currentY > 0 {
 		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationY = currentY - 1;
 	}
@@ -82,7 +82,7 @@ void up (int currentY) {
 // argument(s): current x position of the player
 // returns: nothing
 void left(int currentX) {
-	if (currentX > 0) {
+	if (currentX > 5) {
 		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationX = currentX - 1;
 	} 
@@ -93,7 +93,7 @@ void left(int currentX) {
 // argument(s): current x position of the player
 // returns: nothing
 void right(int currentX) {
-	if (currentX < 49) {
+	if (currentX < 45) {
 		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationX = currentX + 1;
 	} 
@@ -110,7 +110,7 @@ struct Obstacle init_Obstacle(int positionX_par, int positionY_par) {
 }
 
 // Move method
-struct Obstacle move_Obstacle(struct Obstacle obstacle, bool up, bool down, bool left, bool right) {
+struct Obstacle move(struct Obstacle obstacle, bool up, bool down, bool left, bool right) {
 	if (up == true) {
 		board[obstacle.locationY][obstacle.locationX] = '-';
 		obstacle.locationY += 1;
@@ -128,9 +128,8 @@ struct Obstacle move_Obstacle(struct Obstacle obstacle, bool up, bool down, bool
 }
 
 // Update method
-struct Obstacle update_Obstacle(struct Obstacle obstacle) {
+void update_Obstacle(struct Obstacle obstacle) {
 	board[obstacle.locationY][obstacle.locationX] = '@';
-	return obstacle;
 }	
 
 // Transporter methods -------------------------------------------------------------------------
@@ -200,7 +199,7 @@ int main() {
 	init_Board(board);
 	
 	// Initialize player
-	init_Player(0, 20);
+	init_Player(0, 31);
 	
 	// Initialize controller thread
 	//pthread_t controller_Thread;
@@ -253,27 +252,26 @@ int main() {
 	
 		// Alter the obstacle's position
 		if (sensitivity % 20 == 0) {
-			if (obstacle_one.locationX <= 0) {
-				board[obstacle_one.locationY][obstacle_one.locationX] = '-';
-				int lane_Selector = rand() % 4 + 16;
-				obstacle_one.locationX = 50;
-				obstacle_one.locationY = lane_Selector;
-			} else {
-				obstacle_one = move_Obstacle(obstacle_one, 0, 0, 1, 0);
-			}
-		} //else if (sensitivity % 20 == 10) {
-			//obstacle_one = move_Obstacle(obstacle_one, 0, 1, 0, 0);
-		//}
+			board[obstacle_one.locationY][obstacle_one.locationX] = '-';
+			obstacle_one.locationY += 1;
+		} else if (sensitivity % 20 == 10) {
+			board[obstacle_one.locationY][obstacle_one.locationX] = '-';
+			obstacle_one.locationY -= 1;
+		}
 		
 		// Alter the transporter's position
 		if (sensitivity % 100 == 0) {
+			//board[transporter_one.locationY][transporter_one.locationX] = '-';
+			//transporter_one.locationY += 1;
 			transporter_one = move_Transporter(transporter_one, 1, 0, 0, 0);
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
 			}
 		} else if (sensitivity % 100 == 50) {
+			//board[transporter_one.locationY][transporter_one.locationX] = '-';
 			transporter_one = move_Transporter(transporter_one, 0, 1, 0, 0);
+			//transporter_one.locationY -= 1;
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
@@ -284,7 +282,7 @@ int main() {
 		update_Player(board);
 		
 		// Update the obstacle
-		obstacle_one = update_Obstacle(obstacle_one);
+		update_Obstacle(obstacle_one);
 	
 		// Update the transporter
 		update_Transporter(transporter_one);
@@ -294,8 +292,8 @@ int main() {
 		
 		// Check for collisions
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
-			printf("You died! Try again\n");
 			running = false;
+			printf("You died! Try again\n");
 		}
 		
 		// Check if player on log
