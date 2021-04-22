@@ -341,7 +341,7 @@ void draw_map(){
 	init_map();
 	
 }
-
+//
 
 // Main method  --------------------------------------------------------------------------------
 
@@ -358,7 +358,7 @@ int main() {
 	init_SNES();
 
 	// Initialize the board
-	init_Board(board);
+	init_Board(*board);
 	
 	// Initialize player
 	init_Player(20, 20);
