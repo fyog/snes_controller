@@ -330,19 +330,21 @@ void draw_map(){
 				drawColours[i][j] = 0x0000;
 				//printf("colour 1: %d\n", drawColours[i][j]);
 				//block_draw(i, j, 0x0000);//drawColours[i][j] = 0xF800;
-			}else if(board[i][j+5] == 's'){
+			}else {
 				//init_map(i, j, 0xF800);
 				drawColours[i][j] = 0x00FF;
 				//printf("colour 2: %d\n", drawColours[i][j]);
-			}else{
+			}
+			/*
+			else{
 				//init_map(i, j, 0xF800);
 				drawColours[i][j] = 0xF800;
 				//printf("colour 2: %d\n", drawColours[i][j]);
 			}
-			
+			*/
 		}
 	}
-	init_map();
+	//init_map();
 	
 }
 //
@@ -376,10 +378,10 @@ int main() {
 	//pthread_create(&controller_Thread, NULL, run, NULL);
 	
 	// Initialize the obstacles
-	struct Obstacle obstacle_one = init_Obstacle(18, 16);
-	struct Obstacle obstacle_two = init_Obstacle(19, 17);
-	struct Obstacle obstacle_three = init_Obstacle(20, 18);
-	struct Obstacle obstacle_four = init_Obstacle(21, 19);
+	struct Obstacle obstacle_one = init_Obstacle(46, 16);
+	struct Obstacle obstacle_two = init_Obstacle(46, 17);
+	struct Obstacle obstacle_three = init_Obstacle(46, 18);
+	struct Obstacle obstacle_four = init_Obstacle(46, 19);
 
 	
 	// Initialize the transporters
@@ -387,6 +389,9 @@ int main() {
 	
 	// Initialize sensitivity counter
 	int sensitivity = 0;
+	
+	//initial map
+	draw_map();
 	
 	// Get start time
 	time_t startTime = time(NULL);
@@ -506,7 +511,8 @@ int main() {
 		//print_Board(board); // for text-based
 		
 		//init_map();
-		draw_map(); // for graphics
+		//draw_map(); // for graphics
+		init_map();
 		
 // Collision detection ----------------------------------------------------------------------------
 
