@@ -481,7 +481,10 @@ restart:
 
 	
 	// Initialize the transporters
-	struct Transporter transporter_one = init_Transporter(0, 9);
+	struct Transporter transporter_one = init_Transporter(0, 9); // left to right, row 9
+	struct Transporter transporter_two = init_Transporter(45, 8); // right to left, row 8
+	struct Transporter transporter_three = init_Transporter(0, 7); // left to right, row 9
+	struct Transporter transporter_four = init_Transporter(45, 6); // right to left, row 8
 	
 	// Initialize sensitivity counter
 	int sensitivity = 0;
@@ -626,12 +629,69 @@ restart:
 				transporter_one.locationX = 0 + delay_Selector;
 			} else {
 				transporter_one = move_Transporter(transporter_one, 0, 0, 0, 1);
-			if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_one.locationY;
+				if (playerOnLog) {
+					board[playerOne.locationY][playerOne.locationX] = '-';
+					playerOne.locationY = transporter_one.locationY;
+				}
 			}
 		}
-	}
+		
+		// Alter the 2nd transporter's position
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX <= 5) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_two.locationX <= 0) {
+				board[transporter_two.locationY][transporter_two.locationX] = '-';
+				int delay_Selector = rand() % 5;
+				transporter_two.locationX = 0 + delay_Selector;
+			} else {
+				transporter_two = move_Transporter(transporter_two, 0, 0, 1, 0);
+				if (playerOnLog) {
+					board[playerOne.locationY][playerOne.locationX] = '-';
+					playerOne.locationY = transporter_two.locationY;
+				}	
+			}
+		}
+		
+		// Alter the 3rd transporter's position
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX >= 45) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_three.locationX >= 45) {
+				board[transporter_three.locationY][transporter_three.locationX] = '-';
+				int delay_Selector = rand() % 5;
+				transporter_three.locationX = 0 + delay_Selector;
+			} else {
+				transporter_three = move_Transporter(transporter_three, 0, 0, 0, 1);
+				if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_three.locationY;
+				}
+			}
+		}
+		
+		// Alter the 4th transporter's position
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX <= 5) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_four.locationX <= 0) {
+				board[transporter_four.locationY][transporter_four.locationX] = '-';
+				int delay_Selector = rand() % 5;
+				transporter_four.locationX = 0 + delay_Selector;
+			} else {
+				transporter_four = move_Transporter(transporter_four, 0, 0, 1, 0);
+				if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_four.locationY;
+				}
+			}
+		}
 
 // Update components ------------------------------------------------------------------------------
 
@@ -650,7 +710,9 @@ restart:
 
 		// Update the transporter
 		update_Transporter(transporter_one);
-		
+		update_Transporter(transporter_two);
+		update_Transporter(transporter_three);
+		update_Transporter(transporter_four);
 		// Print the board 
 		//print_Board(board); // for text-based
 		
