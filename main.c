@@ -18,6 +18,7 @@
 #include "castle.h"
 #include "log.h"
 #include "frogPlusLog.h"
+#include "rArrow.h"
 
 // Structure definitions
 struct Player {
@@ -222,6 +223,7 @@ void init_map(){
 	short int *castlePtr = (short int *) castle_map.pixel_data;
 	short int *logPtr = (short int *) log_map.pixel_data;
 	short int *lPfPtr = (short int *) frogPlusLog_map.pixel_data;
+	short int *rArrowPtr = (short int *) rightArrow_map.pixel_data;
 	
 	Pixel *pixel;
 	pixel = malloc(sizeof(pixel));
@@ -275,6 +277,10 @@ void init_map(){
 					pixel->y = y;
 				}else if(board[ycount][xcount+5] == 'O'){
 					pixel->color = lPfPtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == 'R'){
+					pixel->color = rArrowPtr[i]; 
 					pixel->x = x;
 					pixel->y = y;
 				}else{
@@ -382,13 +388,13 @@ int main() {
 	
 	// Initialize the obstacles
 	struct Obstacle obstacle_one = init_Obstacle(46, 16, '@'); // right to left, row 16
-	struct Obstacle obstacle_two = init_Obstacle(0, 17, '@'); // left to right, row 17
+	struct Obstacle obstacle_two = init_Obstacle(0, 17, 'R'); // left to right, row 17
 	struct Obstacle obstacle_three = init_Obstacle(46, 18, '@'); // right to left, row 18
-	struct Obstacle obstacle_four = init_Obstacle(0, 19, '@'); // left to right, row 19
-	struct Obstacle obstacle_five = init_Obstacle(0, 16, '@'); //left to right, row 16
-	struct Obstacle obstacle_six = init_Obstacle(0, 17, '@'); // left to right, row 17
+	struct Obstacle obstacle_four = init_Obstacle(0, 19, 'R'); // left to right, row 19
+	struct Obstacle obstacle_five = init_Obstacle(0, 16, 'R'); //left to right, row 16
+	struct Obstacle obstacle_six = init_Obstacle(0, 17, 'R'); // left to right, row 17
 	struct Obstacle obstacle_seven = init_Obstacle(46, 18, '@'); // right to left, row 18
-	struct Obstacle obstacle_eight = init_Obstacle(0, 18, '@'); // left to right, row 18
+	struct Obstacle obstacle_eight = init_Obstacle(4, 19, 'R'); // left to right, row 18
 
 	
 	// Initialize the transporters
@@ -547,13 +553,13 @@ int main() {
 		
 		// Update the obstacles
 		update_Obstacle(obstacle_one, '@');
-		update_Obstacle(obstacle_two, '@');
+		update_Obstacle(obstacle_two, 'R');
 		update_Obstacle(obstacle_three, '@');
-		update_Obstacle(obstacle_four, '@');
-		update_Obstacle(obstacle_five, '@');
-		update_Obstacle(obstacle_six, '@');
+		update_Obstacle(obstacle_four, 'R');
+		update_Obstacle(obstacle_five, 'R');
+		update_Obstacle(obstacle_six, 'R');
 		update_Obstacle(obstacle_seven, '@');
-		update_Obstacle(obstacle_eight, '@');
+		update_Obstacle(obstacle_eight, 'R');
 
 		// Update the transporter
 		update_Transporter(transporter_one);
