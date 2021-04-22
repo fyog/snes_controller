@@ -170,25 +170,25 @@ struct Transporter init_Transporter(int positionX_par, int positionY_par) {
 // Move method
 struct Transporter move_Transporter(struct Transporter transporter_par, int up, int down, int left, int right) {
 	if (up > 0) {
-	board[transporter_par.locationY][transporter_par.locationX] = '-';
+	board[transporter_par.locationY][transporter_par.locationX] = '/';
 	transporter_par.locationY += up;
 		if (playerOnLog) {
 			playerOne.locationY += up;
 		}
 	} else if (down > 0) {
-		board[transporter_par.locationY][transporter_par.locationX] = '-';
+		board[transporter_par.locationY][transporter_par.locationX] = '/';
 		transporter_par.locationY -= down;
 		if (playerOnLog) {
 			playerOne.locationY -= down;
 		}
 	} else if (left > 0) {
-		board[transporter_par.locationY][transporter_par.locationX] = '-';
+		board[transporter_par.locationY][transporter_par.locationX] = '/';
 		transporter_par.locationX -= left;
 		if (playerOnLog) {
 			playerOne.locationX -= left;
 		}
 	} else if (right > 0) {
-		board[transporter_par.locationY][transporter_par.locationX] = '-';
+		board[transporter_par.locationY][transporter_par.locationX] = '/';
 		transporter_par.locationX += right;
 		if (playerOnLog) {
 			playerOne.locationX += right;
@@ -288,6 +288,10 @@ void init_map(){
 					pixel->color = rArrowPtr[i]; 
 					pixel->x = x;
 					pixel->y = y;
+				}else if(board[ycount][xcount+5] == '/'){
+					pixel->color = 0x00FF; 
+					pixel->x = x;
+					pixel->y = y;
 				}else{
 					pixel->color = drawColours[ycount][xcount]; // pixel
 					pixel->x = x;
@@ -346,7 +350,7 @@ void draw_map(){
 				//block_draw(i, j, 0x0000);//drawColours[i][j] = 0xF800;
 			}else {
 				//init_map(i, j, 0xF800);
-				drawColours[i][j] = 0x00FF;
+				drawColours[i][j] = 0x0FF0;
 				//printf("colour 2: %d\n", drawColours[i][j]);
 			}
 			/*
