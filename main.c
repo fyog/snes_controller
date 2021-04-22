@@ -13,6 +13,11 @@
 #include "controller_driver.h"
 #include "board.h"
 #include <pthread.h>
+#include "frog.h"
+#include "arrow.h"
+#include "castle.h"
+#include "log.h"
+#include "frogPlusLog.h"
 
 // Structure definitions
 struct Player {
@@ -32,7 +37,7 @@ struct Transporter {
 };
 
 typedef struct {
-	int color;
+	short int color;
 	int x, y;
 } Pixel;
 
@@ -209,25 +214,72 @@ void drawPixel(Pixel *pixel){
 void init_map(){
 	fbstruct = initFbInfo();
 	
+	short int *frogPtr=(short int *) frog_map.pixel_data;
+	short int *arrowPtr = (short int *) arrow_map.pixel_data;
+	short int *castlePtr = (short int *) castle_map.pixel_data;
+	short int *logPtr = (short int *) log_map.pixel_data;
+	short int *lPfPtr = (short int *) frogPlusLog_map.pixel_data;
+	
 	Pixel *pixel;
 	pixel = malloc(sizeof(pixel));
 	
 	int ycount = 0;
 	int xcount = 0;
+	short int i = 0;
+	short int j = 0;
+	short int last = 0;
 	
 	for (int y = 0; y < 672; y++)
 	{
 		if(y % 32 == 0 && ycount < 20 && y != 0){
 			ycount++;
 		}
+	
+		if(y % 32 == 0){
+			j = 0;
+		}
+		last = 32 * j;
+		j++;
+		
 		for (int x = 0; x < 1280; x++) 
 		{	
 				if(x % 32 == 0 && xcount < 41 && x != 0){
-					xcount++;                                                           
+					xcount++;                                                          
 				}
-				pixel->color = drawColours[ycount][xcount]; // pixel
-				pixel->x = x;
-				pixel->y = y;
+				
+				if(x % 32 == 0){    
+					i = last;                                                   
+				}
+				
+				//printf("outside i: %d\n", i);
+				
+				if(board[ycount][xcount+5] == 'X'){
+					pixel->color = frogPtr[i]; //0x00FF; //alienPtr[i]; // pixel
+					pixel->x = x;
+					pixel->y = y;
+					//printf("i: %d\n", i);
+				}else if(board[ycount][xcount+5] == '@'){
+					pixel->color = arrowPtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == '#'){
+					pixel->color = castlePtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == 'U'){
+					pixel->color = logPtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == 'O'){
+					pixel->color = lPfPtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else{
+					pixel->color = drawColours[ycount][xcount]; // pixel
+					pixel->x = x;
+					pixel->y = y;
+				}
+				i++;
 	
 				drawPixel(pixel);
 		}
@@ -289,6 +341,7 @@ void draw_map(){
 	init_map();
 	
 }
+
 
 // Main method  --------------------------------------------------------------------------------
 
