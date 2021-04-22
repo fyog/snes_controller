@@ -153,8 +153,8 @@ struct Obstacle move_Obstacle(struct Obstacle obstacle, int up, int down, int le
 }
 
 // Update method
-void update_Obstacle(struct Obstacle obstacle, char char_representation) {
-	board[obstacle.locationY][obstacle.locationX] = char_representation;
+void update_Obstacle(struct Obstacle obstacle, char representation) {
+	board[obstacle.locationY][obstacle.locationX] = representation;
 }	
 
 // Transporter methods -------------------------------------------------------------------------
@@ -470,22 +470,21 @@ restart:
 	//pthread_create(&controller_Thread, NULL, run, NULL);
 	
 	// Initialize the obstacles
-	struct Obstacle obstacle_one = init_Obstacle(45, 16, '@'); // right to left, row 16
+	struct Obstacle obstacle_one = init_Obstacle(46, 16, '@'); // right to left, row 16
 	struct Obstacle obstacle_two = init_Obstacle(0, 17, 'R'); // left to right, row 17
-	struct Obstacle obstacle_three = init_Obstacle(45, 18, '@'); // right to left, row 18
+	struct Obstacle obstacle_three = init_Obstacle(46, 18, '@'); // right to left, row 18
 	struct Obstacle obstacle_four = init_Obstacle(0, 19, 'R'); // left to right, row 19
 	struct Obstacle obstacle_five = init_Obstacle(0, 16, '@'); //left to right, row 16
 	struct Obstacle obstacle_six = init_Obstacle(0, 17, 'R'); // left to right, row 17
-	struct Obstacle obstacle_seven = init_Obstacle(45, 18, '@'); // right to left, row 18
+	struct Obstacle obstacle_seven = init_Obstacle(46, 18, '@'); // right to left, row 18
 	struct Obstacle obstacle_eight = init_Obstacle(4, 19, 'R'); // left to right, row 18
 
 	
 	// Initialize the transporters
-	struct Transporter transporter_one = init_Transporter(0, 9);
-	struct Transporter transporter_two = init_Transporter(45, 8);
-	struct Transporter transporter_three = init_Transporter(0, 7);
-	struct Transporter transporter_four = init_Transporter(45, 6);
-
+	struct Transporter transporter_one = init_Transporter(4, 9); // left to right, row 9
+	struct Transporter transporter_two = init_Transporter(45, 8); // right to left, row 8
+	struct Transporter transporter_three = init_Transporter(4, 7); // left to right, row 7
+	struct Transporter transporter_four = init_Transporter(45, 6); // right to left, row 6
 	
 	// Initialize sensitivity counter
 	int sensitivity = 0;
@@ -616,54 +615,52 @@ restart:
 				obstacle_eight = move_Obstacle(obstacle_eight, 0, 0, 0, 1);
 			}
 		}
+		
 // Transporter movement ---------------------------------------------------------------------------
 
-		// Alter the 1st transporter's position
+		// Alter the 1st transporter's position (left to right)
 		if (sensitivity % 10 == 0) {
 			if (playerOne.locationX >= 45) {
 				printf("You fell off the edge of the map!");
 				running = false;
 			}
 			if (transporter_one.locationX >= 45) {
-				board[transporter_one.locationY][transporter_one.locationX] = '-';
 				int delay_Selector = rand() % 5;
 				transporter_one.locationX = 0 + delay_Selector;
 			} else {
 				transporter_one = move_Transporter(transporter_one, 0, 0, 0, 1);
 				if (playerOnLog) {
-					board[playerOne.locationY][playerOne.locationX] = '-';
-					playerOne.locationY = transporter_one.locationY;
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_one.locationY;
 				}
 			}
 		}
 		
-		// Alter the 2nd transporter's position
+		// Alter the 2nd transporter's position (right to left)
 		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX >= 45) {
+			if (playerOne.locationX <= 5) {
 				printf("You fell off the edge of the map!");
 				running = false;
 			}
 			if (transporter_two.locationX <= 0) {
-				board[transporter_two.locationY][transporter_two.locationX] = '-';
 				int delay_Selector = rand() % 5;
-				transporter_two.locationX = 0 + delay_Selector;
+				transporter_two.locationX = 45 + delay_Selector;
 			} else {
 				transporter_two = move_Transporter(transporter_two, 0, 0, 1, 0);
 				if (playerOnLog) {
-					board[playerOne.locationY][playerOne.locationX] = '-';
-					playerOne.locationY = transporter_two.locationY;
-				}	
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_four.locationY;
+				}
 			}
 		}
 		
-		// Alter the 3rd transporter's position
+		// Alter the 3rd transporter's position (left to right)
 		if (sensitivity % 10 == 0) {
 			if (playerOne.locationX >= 45) {
 				printf("You fell off the edge of the map!");
 				running = false;
 			}
 			if (transporter_three.locationX >= 45) {
-				board[transporter_three.locationY][transporter_three.locationX] = '-';
 				int delay_Selector = rand() % 5;
 				transporter_three.locationX = 0 + delay_Selector;
 			} else {
@@ -675,16 +672,15 @@ restart:
 			}
 		}
 		
-		// Alter the 4th transporter's position
+		// Alter the 4th transporter's position (right to left)
 		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX >= 45) {
+			if (playerOne.locationX <= 5) {
 				printf("You fell off the edge of the map!");
 				running = false;
 			}
-			if (transporter_four.locationX >= 45) {
-				board[transporter_four.locationY][transporter_four.locationX] = '-';
+			if (transporter_four.locationX <= 0) {
 				int delay_Selector = rand() % 5;
-				transporter_four.locationX = 0 + delay_Selector;
+				transporter_four.locationX = 45 + delay_Selector;
 			} else {
 				transporter_four = move_Transporter(transporter_four, 0, 0, 1, 0);
 				if (playerOnLog) {
@@ -693,9 +689,6 @@ restart:
 				}
 			}
 		}
-		
-	
-
 
 // Update components ------------------------------------------------------------------------------
 
@@ -717,8 +710,6 @@ restart:
 		update_Transporter(transporter_two);
 		update_Transporter(transporter_three);
 		update_Transporter(transporter_four);
-
-		
 		// Print the board 
 		//print_Board(board); // for text-based
 		
@@ -779,8 +770,9 @@ restart:
 		
 		// Increment sensitivity counter
 		sensitivity += 1;
-		}
+	}
 	
 	// Print exit message
 	printf("Successfully exited.\n"); // on exit
+
 }
