@@ -15,7 +15,9 @@ void init_Board(char* board) {
 			}else if(i % 5 == 0) {
 				*((board + i * BOARD_WIDTH) + j) = 's';
 			} 
-			else {
+			else if (i > 5 && i < 10) {
+				*((board + i * BOARD_WIDTH) + j) = '/';
+			} else {
 				*((board + i * BOARD_WIDTH) + j) = '-';
 			}
 		}

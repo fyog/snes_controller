@@ -50,6 +50,7 @@ struct Player playerOne;
 char board[21][50];
 bool playerOnLog;
 int drawColours[21][40];
+char currentChar;
 
 // Player methods -------------------------------------------------------------------------------
 
@@ -70,7 +71,9 @@ void init_Player(int locationX_par, int locationY_par ) {
 // argument(s): none
 // returns: nothing
 void update_Player() {
+	currentChar = board[playerOne.locationY][playerOne.locationX];
 	board[playerOne.locationY][playerOne.locationX] = 'X';
+	
 }
 	
 // Moves the player down
@@ -81,6 +84,7 @@ void down(int currentY) {
 	if (currentY < 20) {
 		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationY = currentY + 1;
+		
 	} 
 }
 
@@ -368,7 +372,6 @@ void draw_mainMenu(int selected){
 	Pixel *pixel;
 	pixel = malloc(sizeof(Pixel));
 	int i=0;
-	unsigned int quarter,byte,word;
 	for (int y = 0; y < 672; y++)//30 is the image height
 	{
 		for (int x = 0; x < 1280; x++) // 30 is image width
@@ -420,7 +423,7 @@ void mainMenu(){
 		if(selector == 0 && buttons_arr[8] == 0){
 			break;
 		}else if(selector == 1 && buttons_arr[8] == 0){
-			printf("thanks for playing!\n");
+			printf("Thanks for playing!\n");
 			exit(1);
 		}
 	}
@@ -452,7 +455,7 @@ restart:
 	init_Board(*board);
 	
 	// Initialize player
-	init_Player(20, 20);
+	init_Player(25, 20);
 	
 	//initialize map
 	//init_map();
@@ -474,7 +477,7 @@ restart:
 
 	
 	// Initialize the transporters
-	struct Transporter transporter_one = init_Transporter(10, 10);
+	struct Transporter transporter_one = init_Transporter(0, 9);
 	
 	// Initialize sensitivity counter
 	int sensitivity = 0;
@@ -509,7 +512,7 @@ restart:
 				right(playerOne.locationX);
 			}
 			if (buttons_arr[3] == 0) {
-				running = false; // bring up menu
+				running = false; // bring up menu eventually
 			}
 		}
 		
@@ -608,19 +611,23 @@ restart:
 // Transporter movement ---------------------------------------------------------------------------
 
 		// Alter the 1st transporter's position
-		if (sensitivity % 100 == 0) {
-			transporter_one = move_Transporter(transporter_one, 1, 0, 0, 0);
-			if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_one.locationY;
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX >= 45) {
+				printf("You fell off the edge of the map!");
+				running = false;
 			}
-		} else if (sensitivity % 100 == 50) {
-			transporter_one = move_Transporter(transporter_one, 0, 1, 0, 0);
+			if (transporter_one.locationX >= 45) {
+				board[transporter_one.locationY][transporter_one.locationX] = '-';
+				int delay_Selector = rand() % 5;
+				transporter_one.locationX = 0 + delay_Selector;
+			} else {
+				transporter_one = move_Transporter(transporter_one, 0, 0, 0, 1);
 			if (playerOnLog) {
 				board[playerOne.locationY][playerOne.locationX] = '-';
 				playerOne.locationY = transporter_one.locationY;
 			}
 		}
+	}
 
 // Update components ------------------------------------------------------------------------------
 
@@ -679,7 +686,13 @@ restart:
 		}
 
 // Final checks ----------------------------------------------------------------------------------
-
+		
+		// Check for water collision
+		if (currentChar == '/') {
+			running = false;
+			printf ("You drowned!\n");
+		}
+				
 		// Check for win
 		if (playerOne.locationY == 0) {
 			printf("You win!\n");
