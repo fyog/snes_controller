@@ -13,6 +13,11 @@
 #include "controller_driver.h"
 #include "board.h"
 #include <pthread.h>
+#include "frog.h"
+#include "arrow.h"
+#include "castle.h"
+#include "log.h"
+#include "frogPlusLog.h"
 
 // Structure definitions
 struct Player {
@@ -32,7 +37,7 @@ struct Transporter {
 };
 
 typedef struct {
-	int color;
+	short int color;
 	int x, y;
 } Pixel;
 
@@ -209,25 +214,72 @@ void drawPixel(Pixel *pixel){
 void init_map(){
 	fbstruct = initFbInfo();
 	
+	short int *frogPtr=(short int *) frog_map.pixel_data;
+	short int *arrowPtr = (short int *) arrow_map.pixel_data;
+	short int *castlePtr = (short int *) castle_map.pixel_data;
+	short int *logPtr = (short int *) log_map.pixel_data;
+	short int *lPfPtr = (short int *) frogPlusLog_map.pixel_data;
+	
 	Pixel *pixel;
 	pixel = malloc(sizeof(pixel));
 	
 	int ycount = 0;
 	int xcount = 0;
+	short int i = 0;
+	short int j = 0;
+	short int last = 0;
 	
 	for (int y = 0; y < 672; y++)
 	{
 		if(y % 32 == 0 && ycount < 20 && y != 0){
 			ycount++;
 		}
+	
+		if(y % 32 == 0){
+			j = 0;
+		}
+		last = 32 * j;
+		j++;
+		
 		for (int x = 0; x < 1280; x++) 
 		{	
 				if(x % 32 == 0 && xcount < 41 && x != 0){
-					xcount++;                                                           
+					xcount++;                                                          
 				}
-				pixel->color = drawColours[ycount][xcount]; // pixel
-				pixel->x = x;
-				pixel->y = y;
+				
+				if(x % 32 == 0){    
+					i = last;                                                   
+				}
+				
+				//printf("outside i: %d\n", i);
+				
+				if(board[ycount][xcount+5] == 'X'){
+					pixel->color = frogPtr[i]; //0x00FF; //alienPtr[i]; // pixel
+					pixel->x = x;
+					pixel->y = y;
+					//printf("i: %d\n", i);
+				}else if(board[ycount][xcount+5] == '@'){
+					pixel->color = arrowPtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == '#'){
+					pixel->color = castlePtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == 'U'){
+					pixel->color = logPtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == 'O'){
+					pixel->color = lPfPtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else{
+					pixel->color = drawColours[ycount][xcount]; // pixel
+					pixel->x = x;
+					pixel->y = y;
+				}
+				i++;
 	
 				drawPixel(pixel);
 		}
@@ -290,9 +342,9 @@ void draw_map(){
 	
 }
 
-// Main method  --------------------------------------------------------------------------------
+// Game loop -----------------------------------------------------------------------------------
 
-// Main
+// Main method
 //
 // argument(s): none
 // returns: nothing
@@ -317,13 +369,8 @@ int main() {
 	//pthread_t controller_Thread;
 	
 	//pthread_create(&controller_Thread, NULL, run, NULL);
-	
 	// Initialize the obstacles
-	struct Obstacle obstacle_one = init_Obstacle(18, 16);
-	struct Obstacle obstacle_two = init_Obstacle(19, 17);
-	struct Obstacle obstacle_three = init_Obstacle(20, 18);
-	struct Obstacle obstacle_four = init_Obstacle(21, 19);
-
+	struct Obstacle obstacle_one = init_Obstacle(16, 16);
 	
 	// Initialize the transporters
 	struct Transporter transporter_one = init_Transporter(10, 10);
@@ -335,7 +382,7 @@ int main() {
 	time_t startTime = time(NULL);
 	
 	
-	// Game loop...
+	// Game loop
 	while (running) {
 		
 		// Get current time
@@ -367,56 +414,20 @@ int main() {
 		int timeElapsed = currentTime - startTime;
 		int timeRemaining = 90 - timeElapsed;
 		//printf("%d s\n", timeRemaining);
-		
-// Obstacle movement -----------------------------------------------------------------------------
 	
-		// Alter the 1st obstacle's position
+		// Alter the obstacle's position
 		if (sensitivity % 20 == 0) {
 			if (obstacle_one.locationX <= 0) {
 				board[obstacle_one.locationY][obstacle_one.locationX] = '-';
-				int delay_Selector = rand() % 5;
-				obstacle_one.locationX = 44 + delay_Selector;
+				int lane_Selector = rand() % 4 + 16;
+				obstacle_one.locationX = 50;
+				obstacle_one.locationY = lane_Selector;
 			} else {
 				obstacle_one = move_Obstacle(obstacle_one, 0, 0, 1, 0);
 			}
-		}
-		
-		// Alter the 2nd obstacle's position
-		if (sensitivity % 15 == 0) {
-			if (obstacle_two.locationX <= 0) {
-				board[obstacle_two.locationY][obstacle_two.locationX] = '-';
-				int delay_Selector = rand() % 5;
-				obstacle_two.locationX = 44 + delay_Selector;
-			} else {
-				obstacle_two = move_Obstacle(obstacle_two, 0, 0, 1, 0);
-			}
 		} 
 		
-		// Alter the 3rd obstacle's position
-		if (sensitivity % 5 == 0) {
-			if (obstacle_three.locationX <= 0) {
-				board[obstacle_three.locationY][obstacle_three.locationX] = '-';
-				int delay_Selector = rand() % 5;
-				obstacle_three.locationX = 44 + delay_Selector;
-			} else {
-				obstacle_three = move_Obstacle(obstacle_three, 0, 0, 1, 0);
-			}
-		}
-		
-		// Alter the 4th obstacle's position
-		if (sensitivity % 2 == 0) {
-			if (obstacle_four.locationX <= 0) {
-				board[obstacle_four.locationY][obstacle_four.locationX] = '-';
-				int delay_Selector = rand() % 5;
-				obstacle_four.locationX = 44 + delay_Selector;
-			} else {
-				obstacle_four = move_Obstacle(obstacle_four, 0, 0, 1, 0);
-			}
-		}
-		
-// Transporter movement ---------------------------------------------------------------------------
-
-		// Alter the 1st transporter's position
+		// Alter the transporter's position
 		if (sensitivity % 100 == 0) {
 			transporter_one = move_Transporter(transporter_one, 1, 0, 0, 0);
 			if (playerOnLog) {
@@ -430,40 +441,28 @@ int main() {
 				playerOne.locationY = transporter_one.locationY;
 			}
 		}
-
-// Update components ------------------------------------------------------------------------------
-
+		
 		// Update the player's position
 		update_Player(board);
 		
-		// Update the obstacles
+		// Update the obstacle
 		update_Obstacle(obstacle_one);
-		update_Obstacle(obstacle_two);
-		update_Obstacle(obstacle_three);
-		update_Obstacle(obstacle_four);
-
+	
 		// Update the transporter
 		update_Transporter(transporter_one);
 		
-		// Print the board 
-		//print_Board(board); // for text-based
+		// Print the board
+		//print_Board(board);
 		
 		//init_map();
-		draw_map(); // for graphics
+		draw_map();
 		
-// Collision detection ----------------------------------------------------------------------------
-
+		// Check for collisions
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
 			printf("You died! Try again\n");
 			running = false;
-		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
-			printf("You died! Try again\n");
-			running = false;
-		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
-			printf("You died! Try again\n");
-			running = false;
-		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
-			printf("You died! Try again\n");
+			return;
+
 		}
 		
 		// Check if player on log
@@ -472,9 +471,7 @@ int main() {
 		} else {
 			playerOnLog = false;
 		}
-
-// Final checks ----------------------------------------------------------------------------------
-
+		
 		// Check for win
 		if (playerOne.locationY == 0) {
 			printf("You win!\n");
@@ -492,6 +489,6 @@ int main() {
 	}
 	
 	// Print exit message
-	printf("Successfully exited.\n"); // on exit
+	printf("Successfully exited.\n");
 
 }
