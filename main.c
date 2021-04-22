@@ -47,7 +47,6 @@ struct fbs fbstruct;
 struct Player playerOne;
 char board[21][50];
 bool playerOnLog;
-
 int drawColours[21][40];
 
 // Player methods -------------------------------------------------------------------------------
@@ -118,16 +117,19 @@ void right(int currentX) {
 
 // Obstacle methods -----------------------------------------------------------------------------
 
-struct Obstacle init_Obstacle(int positionX_par, int positionY_par) {
+// Initialize obstacle
+struct Obstacle init_Obstacle(int positionX_par, int positionY_par, char representation) {
 	struct Obstacle obstacle;
 	obstacle.locationX = positionX_par;
 	obstacle.locationY = positionY_par;
-	board[positionY_par][positionX_par] = '@';
+	board[positionY_par][positionX_par] = representation;
 	return obstacle;
 }
 
+
 // Move method
 struct Obstacle move_Obstacle(struct Obstacle obstacle, int up, int down, int left, int right) {
+	
 	if (up == true) {
 		board[obstacle.locationY][obstacle.locationX] = '-';
 		obstacle.locationY += 1;
@@ -145,8 +147,8 @@ struct Obstacle move_Obstacle(struct Obstacle obstacle, int up, int down, int le
 }
 
 // Update method
-void update_Obstacle(struct Obstacle obstacle) {
-	board[obstacle.locationY][obstacle.locationX] = '@';
+void update_Obstacle(struct Obstacle obstacle, char representation) {
+	board[obstacle.locationY][obstacle.locationX] = representation;
 }	
 
 // Transporter methods -------------------------------------------------------------------------
@@ -198,6 +200,7 @@ void update_Transporter(struct Transporter transporter) {
 	}
 }
 
+// Graphics methods ---------------------------------------------------------------------------
 
 /* Draw a pixel */
 void drawPixel(Pixel *pixel){
@@ -356,7 +359,7 @@ void draw_map(){
 // argument(s): none
 // returns: nothing
 int main() {
-	
+		
 	// Create running boolean
 	bool running = true;
 	
@@ -378,10 +381,14 @@ int main() {
 	//pthread_create(&controller_Thread, NULL, run, NULL);
 	
 	// Initialize the obstacles
-	struct Obstacle obstacle_one = init_Obstacle(46, 16);
-	struct Obstacle obstacle_two = init_Obstacle(46, 17);
-	struct Obstacle obstacle_three = init_Obstacle(46, 18);
-	struct Obstacle obstacle_four = init_Obstacle(46, 19);
+	struct Obstacle obstacle_one = init_Obstacle(46, 16, '@'); // right to left, row 16
+	struct Obstacle obstacle_two = init_Obstacle(0, 17, '@'); // left to right, row 17
+	struct Obstacle obstacle_three = init_Obstacle(46, 18, '@'); // right to left, row 18
+	struct Obstacle obstacle_four = init_Obstacle(0, 19, '@'); // left to right, row 19
+	struct Obstacle obstacle_five = init_Obstacle(0, 16, '@'); //left to right, row 16
+	struct Obstacle obstacle_six = init_Obstacle(0, 17, '@'); // left to right, row 17
+	struct Obstacle obstacle_seven = init_Obstacle(46, 18, '@'); // right to left, row 18
+	struct Obstacle obstacle_eight = init_Obstacle(0, 18, '@'); // left to right, row 18
 
 	
 	// Initialize the transporters
@@ -396,12 +403,11 @@ int main() {
 	// Get start time
 	time_t startTime = time(NULL);
 	
-	
 	// Game loop...
 	while (running) {
 		
-		// Get current time
-		time_t currentTime = time(NULL);
+	// Get current time
+	time_t currentTime = time(NULL);
 		
 		// Read from the controller
 	int* buttons_arr = read_SNES();
@@ -421,7 +427,7 @@ int main() {
 				right(playerOne.locationX);
 			}
 			if (buttons_arr[3] == 0) {
-				running = false;
+				running = false; // bring up menu
 			}
 		}
 		
@@ -432,8 +438,8 @@ int main() {
 		
 // Obstacle movement -----------------------------------------------------------------------------
 	
-		// Alter the 1st obstacle's position
-		if (sensitivity % 20 == 0) {
+		// Alter the 1st obstacle's position (right to left), row 16
+		if (sensitivity % 5 == 0) {
 			if (obstacle_one.locationX <= 0) {
 				board[obstacle_one.locationY][obstacle_one.locationX] = '-';
 				int delay_Selector = rand() % 5;
@@ -443,18 +449,18 @@ int main() {
 			}
 		}
 		
-		// Alter the 2nd obstacle's position
-		if (sensitivity % 15 == 0) {
-			if (obstacle_two.locationX <= 0) {
+		// Alter the 2nd obstacle's position (left to right), row 17
+		if (sensitivity % 10 == 0) {
+			if (obstacle_two.locationX >= 45) {
 				board[obstacle_two.locationY][obstacle_two.locationX] = '-';
 				int delay_Selector = rand() % 5;
-				obstacle_two.locationX = 44 + delay_Selector;
+				obstacle_two.locationX = 0 + delay_Selector;
 			} else {
-				obstacle_two = move_Obstacle(obstacle_two, 0, 0, 1, 0);
+				obstacle_two = move_Obstacle(obstacle_two, 0, 0, 0, 1);
 			}
 		} 
 		
-		// Alter the 3rd obstacle's position
+		// Alter the 3rd obstacle's position (right to left)
 		if (sensitivity % 5 == 0) {
 			if (obstacle_three.locationX <= 0) {
 				board[obstacle_three.locationY][obstacle_three.locationX] = '-';
@@ -465,17 +471,58 @@ int main() {
 			}
 		}
 		
-		// Alter the 4th obstacle's position
+		// Alter the 4th obstacle's position (left to right)
 		if (sensitivity % 2 == 0) {
-			if (obstacle_four.locationX <= 0) {
+			if (obstacle_four.locationX >= 45) {
 				board[obstacle_four.locationY][obstacle_four.locationX] = '-';
 				int delay_Selector = rand() % 5;
-				obstacle_four.locationX = 44 + delay_Selector;
+				obstacle_four.locationX = 0 + delay_Selector;
 			} else {
-				obstacle_four = move_Obstacle(obstacle_four, 0, 0, 1, 0);
+				obstacle_four = move_Obstacle(obstacle_four, 0, 0, 0, 1);
 			}
 		}
 		
+		// Alter the 5th obstacle's position (right to left), row 16
+		if (sensitivity % 5 == 0) {
+			if (obstacle_five.locationX <= 0) {
+				board[obstacle_five.locationY][obstacle_five.locationX] = '-';
+				int delay_Selector = rand() % 5;
+				obstacle_five.locationX = 44 + delay_Selector;
+			} else {
+				obstacle_five = move_Obstacle(obstacle_five, 0, 0, 1, 0);
+			}
+		}
+		
+		// Alter the 6th obstacle's position (left to right), row 17
+		if (sensitivity % 10 == 0) {
+			if (obstacle_six.locationX >= 45) {
+				board[obstacle_six.locationY][obstacle_six.locationX] = '-';
+				int delay_Selector = rand() % 5;
+				obstacle_six.locationX = 0 + delay_Selector;
+			} else {
+				obstacle_six = move_Obstacle(obstacle_six, 0, 0, 0, 1);
+			}
+		}
+		// Alter the 7th obstacle's position (right to left)
+		if (sensitivity % 5 == 0) {
+			if (obstacle_seven.locationX <= 0) {
+				board[obstacle_seven.locationY][obstacle_seven.locationX] = '-';
+				int delay_Selector = rand() % 5;
+				obstacle_seven.locationX = 0 + delay_Selector;
+			} else {
+				obstacle_seven = move_Obstacle(obstacle_seven, 0, 0, 1, 0);
+			}
+		}
+		// Alter the 8th obstacle's position (left to right), row 18
+		if (sensitivity % 2 == 0) {
+			if (obstacle_eight.locationX >= 45) {
+				board[obstacle_eight.locationY][obstacle_eight.locationX] = '-';
+				int delay_Selector = rand() % 5;
+				obstacle_eight.locationX = 0 + delay_Selector;
+			} else {
+				obstacle_eight = move_Obstacle(obstacle_eight, 0, 0, 0, 1);
+			}
+		}
 // Transporter movement ---------------------------------------------------------------------------
 
 		// Alter the 1st transporter's position
@@ -499,10 +546,14 @@ int main() {
 		update_Player(board);
 		
 		// Update the obstacles
-		update_Obstacle(obstacle_one);
-		update_Obstacle(obstacle_two);
-		update_Obstacle(obstacle_three);
-		update_Obstacle(obstacle_four);
+		update_Obstacle(obstacle_one, '@');
+		update_Obstacle(obstacle_two, '@');
+		update_Obstacle(obstacle_three, '@');
+		update_Obstacle(obstacle_four, '@');
+		update_Obstacle(obstacle_five, '@');
+		update_Obstacle(obstacle_six, '@');
+		update_Obstacle(obstacle_seven, '@');
+		update_Obstacle(obstacle_eight, '@');
 
 		// Update the transporter
 		update_Transporter(transporter_one);
@@ -514,19 +565,24 @@ int main() {
 		//draw_map(); // for graphics
 		init_map();
 		
-// Collision detection ----------------------------------------------------------------------------
+// Collision detection ---------------------------------------------------------------------------
+
 
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
-			printf("You died! Try again\n");
 			running = false;
 		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
-			printf("You died! Try again\n");
 			running = false;
 		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
-			printf("You died! Try again\n");
 			running = false;
 		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
-			printf("You died! Try again\n");
+			running = false;
+		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
 			running = false;
 		}
 		
