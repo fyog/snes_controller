@@ -43,7 +43,7 @@ struct Player playerOne;
 char board[21][50];
 bool playerOnLog;
 
-int drawColours[32][32];
+int drawColours[21][40];
 
 // Player methods -------------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ void left(int currentX) {
 // argument(s): current x position of the player
 // returns: nothing
 void right(int currentX) {
-	if (currentX < 45) {
+	if (currentX < 44) {
 		board[playerOne.locationY][playerOne.locationX] = '-';
 		playerOne.locationX = currentX + 1;
 	} 
@@ -215,15 +215,15 @@ void init_map(){
 	int ycount = 0;
 	int xcount = 0;
 	
-	for (int y = 0; y < 1024; y++)
+	for (int y = 0; y < 672; y++)
 	{
-		if(y % 32 == 0 && ycount < 32 && y != 0){
+		if(y % 32 == 0 && ycount < 20 && y != 0){
 			ycount++;
 		}
-		for (int x = 0; x < 1024; x++) 
+		for (int x = 0; x < 1280; x++) 
 		{	
-				if(x % 32 == 0 && xcount < 32 && x != 0){
-					xcount++;
+				if(x % 32 == 0 && xcount < 41 && x != 0){
+					xcount++;                                                           
 				}
 				pixel->color = drawColours[ycount][xcount]; // pixel
 				pixel->x = x;
@@ -272,9 +272,9 @@ void block_draw(int mul, int mul2, int colour){
 
 void draw_map(){
 	
-	for(int i = 0; i < 32; i++){
-		for(int j = 0; j < 32; j++){
-			if(board[i][j] != '-'){
+	for(int i = 0; i < 21; i++){
+		for(int j = 0; j < 40; j++){
+			if(board[i][j+5] != '-'){
 				drawColours[i][j] = 0x0000;
 				//printf("colour 1: %d\n", drawColours[i][j]);
 				//block_draw(i, j, 0x0000);//drawColours[i][j] = 0xF800;
@@ -308,7 +308,7 @@ int main() {
 	init_Board(board);
 	
 	// Initialize player
-	init_Player(0, 31);
+	init_Player(20, 20);
 	
 	//initialize map
 	//init_map();
