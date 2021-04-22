@@ -326,10 +326,14 @@ void draw_map(){
 	
 	for(int i = 0; i < 21; i++){
 		for(int j = 0; j < 40; j++){
-			if(board[i][j+5] != '-'){
+			if(board[i][j+5] == '-'){
 				drawColours[i][j] = 0x0000;
 				//printf("colour 1: %d\n", drawColours[i][j]);
 				//block_draw(i, j, 0x0000);//drawColours[i][j] = 0xF800;
+			}else if(board[i][j+5] == 's'){
+				//init_map(i, j, 0xF800);
+				drawColours[i][j] = 0x00FF;
+				//printf("colour 2: %d\n", drawColours[i][j]);
 			}else{
 				//init_map(i, j, 0xF800);
 				drawColours[i][j] = 0xF800;

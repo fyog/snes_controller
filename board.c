@@ -12,7 +12,10 @@ void init_Board(char* board) {
 		for (int j = 0; j < BOARD_WIDTH; j++) {
 			if (i == 0) {
 				*((board + i * BOARD_WIDTH) + j) = '#';
-			} else {
+			}else if(i % 5 == 0) {
+				*((board + i * BOARD_WIDTH) + j) = 's';
+			} 
+			else {
 				*((board + i * BOARD_WIDTH) + j) = '-';
 			}
 		}
