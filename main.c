@@ -290,9 +290,9 @@ void draw_map(){
 	
 }
 
-// Game loop -----------------------------------------------------------------------------------
+// Main method  --------------------------------------------------------------------------------
 
-// Main method
+// Main
 //
 // argument(s): none
 // returns: nothing
@@ -335,7 +335,7 @@ int main() {
 	time_t startTime = time(NULL);
 	
 	
-	// Game loop
+	// Game loop...
 	while (running) {
 		
 		// Get current time
@@ -367,6 +367,8 @@ int main() {
 		int timeElapsed = currentTime - startTime;
 		int timeRemaining = 90 - timeElapsed;
 		//printf("%d s\n", timeRemaining);
+		
+// Obstacle movement -----------------------------------------------------------------------------
 	
 		// Alter the 1st obstacle's position
 		if (sensitivity % 20 == 0) {
@@ -410,9 +412,11 @@ int main() {
 			} else {
 				obstacle_four = move_Obstacle(obstacle_four, 0, 0, 1, 0);
 			}
-		} 
+		}
 		
-		// Alter the transporter's position
+// Transporter movement ---------------------------------------------------------------------------
+
+		// Alter the 1st transporter's position
 		if (sensitivity % 100 == 0) {
 			transporter_one = move_Transporter(transporter_one, 1, 0, 0, 0);
 			if (playerOnLog) {
@@ -426,7 +430,9 @@ int main() {
 				playerOne.locationY = transporter_one.locationY;
 			}
 		}
-		
+
+// Update components ------------------------------------------------------------------------------
+
 		// Update the player's position
 		update_Player(board);
 		
@@ -436,17 +442,17 @@ int main() {
 		update_Obstacle(obstacle_three);
 		update_Obstacle(obstacle_four);
 
-	
 		// Update the transporter
 		update_Transporter(transporter_one);
 		
-		// Print the board
-		//print_Board(board);
+		// Print the board 
+		//print_Board(board); // for text-based
 		
 		//init_map();
-		draw_map();
+		draw_map(); // for graphics
 		
-		// Check for collisions
+// Collision detection ----------------------------------------------------------------------------
+
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
 			printf("You died! Try again\n");
 			running = false;
@@ -466,7 +472,9 @@ int main() {
 		} else {
 			playerOnLog = false;
 		}
-		
+
+// Final checks ----------------------------------------------------------------------------------
+
 		// Check for win
 		if (playerOne.locationY == 0) {
 			printf("You win!\n");
@@ -484,6 +492,6 @@ int main() {
 	}
 	
 	// Print exit message
-	printf("Successfully exited.\n");
+	printf("Successfully exited.\n"); // on exit
 
 }
