@@ -19,6 +19,7 @@
 #include "log.h"
 #include "frogPlusLog.h"
 #include "rArrow.h"
+#include "mainMenu.h"
 
 // Structure definitions
 struct Player {
@@ -356,6 +357,75 @@ void draw_map(){
 	//init_map();
 	
 }
+
+void draw_mainMenu(int selected){
+	/* initialize + get FBS */
+	fbstruct = initFbInfo();
+	
+	short int *mainMenuPtr=(short int *) mainMenu_map.pixel_data;
+	
+	/* initialize a pixel */
+	Pixel *pixel;
+	pixel = malloc(sizeof(Pixel));
+	int i=0;
+	unsigned int quarter,byte,word;
+	for (int y = 0; y < 672; y++)//30 is the image height
+	{
+		for (int x = 0; x < 1280; x++) // 30 is image width
+		{	
+				pixel->color = mainMenuPtr[i]; 
+				pixel->x = x;
+				pixel->y = y;
+				drawPixel(pixel);
+				i++;
+		}
+	}
+	i = 0;
+	int ystart = 320;
+	int yend = 352;
+	if(selected == 1){
+		ystart = 420;
+		yend = 452;
+	}
+	for (int y = ystart; y < yend; y++)//30 is the image height
+	{
+		for (int x = 468; x < 500; x++) // 30 is image width
+		{	
+				pixel->color = 0x00FF; 
+				pixel->x = x;
+				pixel->y = y;
+				drawPixel(pixel);
+				i++;
+		}
+	}
+	/* free pixel's allocated memory */
+	free(pixel);
+	pixel = NULL;
+	munmap(fbstruct.fptr, fbstruct.screenSize);
+}
+
+void mainMenu(){
+	
+	int selector = 0;
+//	int* buttons_arr = read_SNES();
+	
+	while(1){
+		int* buttons_arr = read_SNES();
+		if(buttons_arr[4] == 0){
+			selector = 0;
+		}else if(buttons_arr[5] == 0){
+			selector = 1;
+		}
+		draw_mainMenu(selector);
+		if(selector == 0 && buttons_arr[8] == 0){
+			break;
+		}else if(selector == 1 && buttons_arr[8] == 0){
+			printf("thanks for playing!\n");
+			exit(1);
+		}
+	}
+	
+}
 //
 
 // Main method  --------------------------------------------------------------------------------
@@ -365,12 +435,18 @@ void draw_map(){
 // argument(s): none
 // returns: nothing
 int main() {
-		
+	
+
 	// Create running boolean
 	bool running = true;
-	
+
+restart: 
+	running = true;
 	// Initialize pins
 	init_SNES();
+	
+	mainMenu();
+	//draw_mainMenu();
 
 	// Initialize the board
 	init_Board(*board);
@@ -391,7 +467,7 @@ int main() {
 	struct Obstacle obstacle_two = init_Obstacle(0, 17, 'R'); // left to right, row 17
 	struct Obstacle obstacle_three = init_Obstacle(46, 18, '@'); // right to left, row 18
 	struct Obstacle obstacle_four = init_Obstacle(0, 19, 'R'); // left to right, row 19
-	struct Obstacle obstacle_five = init_Obstacle(0, 16, 'R'); //left to right, row 16
+	struct Obstacle obstacle_five = init_Obstacle(0, 16, '@'); //left to right, row 16
 	struct Obstacle obstacle_six = init_Obstacle(0, 17, 'R'); // left to right, row 17
 	struct Obstacle obstacle_seven = init_Obstacle(46, 18, '@'); // right to left, row 18
 	struct Obstacle obstacle_eight = init_Obstacle(4, 19, 'R'); // left to right, row 18
@@ -556,7 +632,7 @@ int main() {
 		update_Obstacle(obstacle_two, 'R');
 		update_Obstacle(obstacle_three, '@');
 		update_Obstacle(obstacle_four, 'R');
-		update_Obstacle(obstacle_five, 'R');
+		update_Obstacle(obstacle_five, '@');
 		update_Obstacle(obstacle_six, 'R');
 		update_Obstacle(obstacle_seven, '@');
 		update_Obstacle(obstacle_eight, 'R');
@@ -590,6 +666,9 @@ int main() {
 			running = false;
 		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
 			running = false;
+		}
+		if(running == false){
+			goto restart;
 		}
 		
 		// Check if player on log
