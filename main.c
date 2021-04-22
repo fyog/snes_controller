@@ -193,7 +193,7 @@ void update_Transporter(struct Transporter transporter) {
 	}
 }
 
-
+/*
 /* Draw a pixel */
 void drawPixel(Pixel *pixel){
 	long int location = (pixel->x +fbstruct.xOff) * (fbstruct.bits/8) +
@@ -308,7 +308,7 @@ int main() {
 	init_Board(board);
 	
 	// Initialize player
-	init_Player(0, 31);
+	init_Player(0, 20);
 	
 	//initialize map
 	//init_map();
@@ -400,10 +400,10 @@ int main() {
 		update_Transporter(transporter_one);
 		
 		// Print the board
-		//print_Board(board);
+		print_Board(board);
 		
 		//init_map();
-		draw_map();
+		//draw_map();
 		
 		// Check for collisions
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
