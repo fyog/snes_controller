@@ -517,6 +517,7 @@ int main() {
 			running = false;
 		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
 			printf("You died! Try again\n");
+			running = false;
 		}
 		
 		// Check if player on log
