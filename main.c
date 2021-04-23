@@ -51,6 +51,7 @@ char board[21][50];
 bool playerOnLog;
 int drawColours[21][40];
 char currentChar;
+bool running = true;
 
 // Player methods -------------------------------------------------------------------------------
 
@@ -196,6 +197,46 @@ struct Transporter move_Transporter(struct Transporter transporter_par, int up, 
 	 }
 	return transporter_par;
 }
+
+struct Transporter set_Motion (int sensitivity, struct Transporter transporter_one, bool direction) {
+	if (direction){
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX >= 45) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_one.locationX >= 45) {
+				int delay_Selector = rand() % 5;
+				transporter_one.locationX = 0 + delay_Selector;
+			} else {
+				transporter_one = move_Transporter(transporter_one, 0, 0, 0, 1);
+				if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_one.locationY;
+				}
+			}
+		}
+	} else if (!direction) {
+	if (sensitivity % 10 == 0) {
+			if (playerOne.locationX <= 0) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_one.locationX <= 0) {
+				int delay_Selector = rand() % 5;
+				transporter_one.locationX = 45 + delay_Selector;
+			} else {
+				transporter_one = move_Transporter(transporter_one, 0, 0, 1, 0);
+				if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_one.locationY;
+				}
+			}
+		}
+	}
+	return transporter_one;
+}
+
 
 // Update method
 void update_Transporter(struct Transporter transporter) {
@@ -617,78 +658,12 @@ restart:
 		}
 		
 // Transporter movement ---------------------------------------------------------------------------
+	
+		transporter_one = set_Motion(sensitivity, transporter_one, true);
+		transporter_two = set_Motion(sensitivity, transporter_one, true);
+		transporter_three = set_Motion(sensitivity, transporter_one, true);
+		transporter_four = set_Motion(sensitivity, transporter_one, true);
 
-		// Alter the 1st transporter's position (left to right)
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX >= 45) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_one.locationX >= 45) {
-				int delay_Selector = rand() % 5;
-				transporter_one.locationX = 0 + delay_Selector;
-			} else {
-				transporter_one = move_Transporter(transporter_one, 0, 0, 0, 1);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_one.locationY;
-				}
-			}
-		}
-		
-		// Alter the 2nd transporter's position (right to left)
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX <= 5) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_two.locationX <= 0) {
-				int delay_Selector = rand() % 5;
-				transporter_two.locationX = 45 + delay_Selector;
-			} else {
-				transporter_two = move_Transporter(transporter_two, 0, 0, 1, 0);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_four.locationY;
-				}
-			}
-		}
-		
-		// Alter the 3rd transporter's position (left to right)
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX >= 45) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_three.locationX >= 45) {
-				int delay_Selector = rand() % 5;
-				transporter_three.locationX = 0 + delay_Selector;
-			} else {
-				transporter_three = move_Transporter(transporter_three, 0, 0, 0, 1);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_three.locationY;
-				}
-			}
-		}
-		
-		// Alter the 4th transporter's position (right to left)
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX <= 5) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_four.locationX <= 0) {
-				int delay_Selector = rand() % 5;
-				transporter_four.locationX = 45 + delay_Selector;
-			} else {
-				transporter_four = move_Transporter(transporter_four, 0, 0, 1, 0);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_four.locationY;
-				}
-			}
-		}
 
 // Update components ------------------------------------------------------------------------------
 
