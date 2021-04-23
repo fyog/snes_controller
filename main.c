@@ -286,6 +286,10 @@ void init_map(){
 					pixel->color = car2Ptr[i]; 
 					pixel->x = x;
 					pixel->y = y;
+				}else if(board[ycount][xcount+5] == 'P'){
+					pixel->color = 0x00FF; 
+					pixel->x = x;
+					pixel->y = y;
 				}else if(board[ycount][xcount+5] == '/'){
 					pixel->color = 0x00FF; 
 					pixel->x = x;
@@ -453,6 +457,13 @@ void draw_gameMenu(int selected){
 	pixel = NULL;
 	munmap(fbstruct.fptr, fbstruct.screenSize);
 }
+
+/*
+void *count(void *a){
+	
+}
+
+*/
 
 void drawGameOver(){
 	/* initialize + get FBS */
@@ -651,6 +662,7 @@ restart:
 	// Game loop...
 	while (running) {
 		
+		
 	// Get current time
 	time_t currentTime = time(NULL);
 		
@@ -681,6 +693,11 @@ restart:
 		int timeElapsed = currentTime - startTime;
 		int timeRemaining = 90 - timeElapsed;
 		//printf("%d s\n", timeRemaining);
+		if(timeElapsed == 25 || timeElapsed == 45){
+			//struct Obstacle valuePack = 
+			init_Obstacle(20, 15, 'P');
+			
+		}
 		
 // Obstacle movement (Level 1) --------------------------------------------------------------------
 	
