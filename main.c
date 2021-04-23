@@ -546,8 +546,6 @@ void gameMenu(){
 			break;
 		}
 	}
-	
-	
 }
 
 //
@@ -587,6 +585,8 @@ restart:
 	//pthread_create(&controller_Thread, NULL, run, NULL);
 	
 	// Initialize the obstacles
+	
+	// Level 1
 	struct Obstacle obstacle_one = init_Obstacle(46, 16, '@'); // right to left, row 16
 	struct Obstacle obstacle_two = init_Obstacle(0, 17, 'R'); // left to right, row 17
 	struct Obstacle obstacle_three = init_Obstacle(46, 18, '@'); // right to left, row 18
@@ -595,6 +595,8 @@ restart:
 	struct Obstacle obstacle_six = init_Obstacle(0, 17, 'R'); // left to right, row 17
 	struct Obstacle obstacle_seven = init_Obstacle(46, 18, '@'); // right to left, row 18
 	struct Obstacle obstacle_eight = init_Obstacle(4, 19, 'R'); // left to right, row 18
+	
+	// Level 2
 	struct Obstacle obstacle_one_one = init_Obstacle(46, 14, '$'); // right to left, row 16
 	struct Obstacle obstacle_two_two = init_Obstacle(0, 13, '%'); // left to right, row 17
 	struct Obstacle obstacle_three_three = init_Obstacle(46, 12, '$'); // right to left, row 18
@@ -603,6 +605,8 @@ restart:
 	struct Obstacle obstacle_six_six = init_Obstacle(0, 14, '%'); // left to right, row 17
 	struct Obstacle obstacle_seven_seven = init_Obstacle(46, 12, '$'); // right to left, row 18
 	struct Obstacle obstacle_eight_eight = init_Obstacle(4, 11, '%'); // left to right, row 18
+	
+	// Level 3
 	struct Obstacle obstacle_one_one_one = init_Obstacle(46, 9, 'U'); // right to left, row 9
 	struct Obstacle obstacle_two_two_two = init_Obstacle(0, 8, 'U'); // left to right, row 8
 	struct Obstacle obstacle_three_three_three = init_Obstacle(46,7, 'U'); // right to left, row 7
@@ -611,6 +615,16 @@ restart:
 	struct Obstacle obstacle_six_six_six = init_Obstacle(0, 8, 'U'); // left to right, row 8 
 	struct Obstacle obstacle_seven_seven_seven = init_Obstacle(46, 7, 'U'); // right to left, row 7
 	struct Obstacle obstacle_eight_eight_eight = init_Obstacle(4, 6, 'U'); // left to right, row 6
+	
+	// Level 4
+	struct Obstacle obstacle_one_one_one_one = init_Obstacle(46, 4, 'U'); // right to left, row 9
+	struct Obstacle obstacle_two_two_two_two = init_Obstacle(0, 3, 'U'); // left to right, row 8
+	struct Obstacle obstacle_three_three_three_three = init_Obstacle(46,2, 'U'); // right to left, row 7
+	struct Obstacle obstacle_four_four_four_four = init_Obstacle(0, 1, 'U'); // left to right, row 6
+	struct Obstacle obstacle_five_five_five_five = init_Obstacle(0, 4, 'U'); //left to right, row 9
+	struct Obstacle obstacle_six_six_six_six = init_Obstacle(0, 3, 'U'); // left to right, row 8 
+	struct Obstacle obstacle_seven_seven_seven_seven = init_Obstacle(46, 2, 'U'); // right to left, row 7
+	struct Obstacle obstacle_eight_eight_eight_eight = init_Obstacle(4, 1, 'U'); // left to right, row 6
 	
 	
 	
@@ -686,69 +700,95 @@ restart:
 // Obstacle movement (Level 2) --------------------------------------------------------------------
 	
 		// Alter the 1st obstacle's position (right to left), row 16
-		obstacle_one_one = set_Position(obstacle_one_one, sensitivity, 5, true);
+		obstacle_one_one = set_Position(obstacle_one_one, sensitivity, 4, true);
 		
 		// Alter the 2nd obstacle's position (left to right), row 17
-		obstacle_two_two = set_Position(obstacle_two_two, sensitivity, 5, false);
+		obstacle_two_two = set_Position(obstacle_two_two, sensitivity, 4, false);
 
 		// Alter the 3rd obstacle's position (right to left)
-		obstacle_three_three = set_Position(obstacle_three_three, sensitivity, 5, true);
+		obstacle_three_three = set_Position(obstacle_three_three, sensitivity, 4, true);
 
 		// Alter the 4th obstacle's position (left to right)
-		obstacle_four_four = set_Position(obstacle_four_four, sensitivity, 5, false);
+		obstacle_four_four = set_Position(obstacle_four_four, sensitivity, 4, false);
 		
 		// Alter the 5th obstacle's position (right to left), row 16
-		obstacle_five_five = set_Position(obstacle_five_five, sensitivity, 5, true);
+		obstacle_five_five = set_Position(obstacle_five_five, sensitivity, 4, true);
 
 		// Alter the 6th obstacle's position (left to right), row 17
-		obstacle_six_six = set_Position(obstacle_six_six, sensitivity, 5, false);
+		obstacle_six_six = set_Position(obstacle_six_six, sensitivity, 4, false);
 
 		// Alter the 7th obstacle's position (right to left)
-		obstacle_seven_seven = set_Position(obstacle_seven_seven, sensitivity, 5, true);
+		obstacle_seven_seven = set_Position(obstacle_seven_seven, sensitivity, 4, true);
 
 		// Alter the 8th obstacle's position (left to right), row 18
-		obstacle_eight_eight = set_Position(obstacle_eight_eight, sensitivity, 5, false);
+		obstacle_eight_eight = set_Position(obstacle_eight_eight, sensitivity, 4, false);
 		
 // Obstacle movement (Level 3) --------------------------------------------------------------------
 	
 		// Alter the 1st obstacle's position (right to left), row 16
-		obstacle_one_one_one = set_Position(obstacle_one_one_one, sensitivity, 5, true);
+		obstacle_one_one_one = set_Position(obstacle_one_one_one, sensitivity, 3, true);
 		
 		// Alter the 2nd obstacle's position (left to right), row 17
-		obstacle_two_two_two = set_Position(obstacle_two_two_two, sensitivity, 5, false);
+		obstacle_two_two_two = set_Position(obstacle_two_two_two, sensitivity, 3, false);
 
 		// Alter the 3rd obstacle's position (right to left)
-		obstacle_three_three_three = set_Position(obstacle_three_three_three, sensitivity, 5, true);
+		obstacle_three_three_three = set_Position(obstacle_three_three_three, sensitivity, 3, true);
 
 		// Alter the 4th obstacle's position (left to right)
-		obstacle_four_four_four = set_Position(obstacle_four_four_four, sensitivity, 5, false);
+		obstacle_four_four_four = set_Position(obstacle_four_four_four, sensitivity, 3, false);
 		
 		// Alter the 5th obstacle's position (right to left), row 16
-		obstacle_five_five_five = set_Position(obstacle_five_five_five, sensitivity, 5, true);
+		obstacle_five_five_five = set_Position(obstacle_five_five_five, sensitivity, 3, true);
 
 		// Alter the 6th obstacle's position (left to right), row 17
-		obstacle_six_six_six = set_Position(obstacle_six_six_six, sensitivity, 5, false);
+		obstacle_six_six_six = set_Position(obstacle_six_six_six, sensitivity, 3, false);
 
 		// Alter the 7th obstacle's position (right to left)
-		obstacle_seven_seven_seven = set_Position(obstacle_seven_seven_seven, sensitivity, 5, true);
+		obstacle_seven_seven_seven = set_Position(obstacle_seven_seven_seven, sensitivity, 3, true);
 
 		// Alter the 8th obstacle's position (left to right), row 18
-		obstacle_eight_eight_eight = set_Position(obstacle_eight_eight_eight, sensitivity, 5, false);
+		obstacle_eight_eight_eight = set_Position(obstacle_eight_eight_eight, sensitivity, 3, false);
 
-// Update components ------------------------------------------------------------------------------
+// Obstacle movement (Level 4) --------------------------------------------------------------------
+	
+		// Alter the 1st obstacle's position (right to left), row 16
+		obstacle_one_one_one_one = set_Position(obstacle_one_one_one_one, sensitivity, 2, true);
+		
+		// Alter the 2nd obstacle's position (left to right), row 17
+		obstacle_two_two_two_two = set_Position(obstacle_two_two_two_two, sensitivity, 2, false);
+
+		// Alter the 3rd obstacle's position (right to left)
+		obstacle_three_three_three_three = set_Position(obstacle_three_three_three_three, sensitivity, 2, true);
+
+		// Alter the 4th obstacle's position (left to right)
+		obstacle_four_four_four_four = set_Position(obstacle_four_four_four_four, sensitivity, 2, false);
+		
+		// Alter the 5th obstacle's position (right to left), row 16
+		obstacle_five_five_five_five = set_Position(obstacle_five_five_five_five, sensitivity, 2, true);
+
+		// Alter the 6th obstacle's position (left to right), row 17
+		obstacle_six_six_six_six = set_Position(obstacle_six_six_six_six, sensitivity, 2, false);
+
+		// Alter the 7th obstacle's position (right to left)
+		obstacle_seven_seven_seven_seven = set_Position(obstacle_seven_seven_seven_seven, sensitivity, 2, true);
+
+		// Alter the 8th obstacle's position (left to right), row 18
+		obstacle_eight_eight_eight_eight = set_Position(obstacle_eight_eight_eight_eight, sensitivity, 2, false);
+		
+// Update game state ------------------------------------------------------------------------------
 
 		// Update the player's position
 		update_Player(board);
 		
 		// Update the obstacles
-		update_Obstacle(obstacle_one, 'U');
-		update_Obstacle(obstacle_two, 'U');
-		update_Obstacle(obstacle_three, 'U');
-		update_Obstacle(obstacle_four, 'U');
-		update_Obstacle(obstacle_five, 'U');
-		update_Obstacle(obstacle_six, 'U');
-		update_Obstacle(obstacle_seven, 'U');
-		update_Obstacle(obstacle_eight, 'U');
+		update_Obstacle(obstacle_one, '@');
+		update_Obstacle(obstacle_two, 'R');
+		update_Obstacle(obstacle_three, '@');
+		update_Obstacle(obstacle_four, 'R');
+		update_Obstacle(obstacle_five, '@');
+		update_Obstacle(obstacle_six, 'R');
+		update_Obstacle(obstacle_seven, '@');
+		update_Obstacle(obstacle_eight, 'R');
 		
 		// Level 2
 		update_Obstacle(obstacle_one_one, '$');
@@ -761,14 +801,25 @@ restart:
 		update_Obstacle(obstacle_eight_eight, '%');
 		
 		// Level 3
-		update_Obstacle(obstacle_one_one_one, '$');
-		update_Obstacle(obstacle_two_two_two, '%');
-		update_Obstacle(obstacle_three_three_three, '$');
-		update_Obstacle(obstacle_four_four_four, '%');
-		update_Obstacle(obstacle_five_five_five, '$');
-		update_Obstacle(obstacle_six_six_six, '%');
-		update_Obstacle(obstacle_seven_seven_seven, '$');
-		update_Obstacle(obstacle_eight_eight_eight, '%');
+		update_Obstacle(obstacle_one_one_one, 'U');
+		update_Obstacle(obstacle_two_two_two, 'U');
+		update_Obstacle(obstacle_three_three_three, 'U');
+		update_Obstacle(obstacle_four_four_four, 'U');
+		update_Obstacle(obstacle_five_five_five, 'U');
+		update_Obstacle(obstacle_six_six_six, 'U');
+		update_Obstacle(obstacle_seven_seven_seven, 'U');
+		update_Obstacle(obstacle_eight_eight_eight, 'U');
+		
+		// Level 4
+		update_Obstacle(obstacle_one_one_one_one, 'U');
+		update_Obstacle(obstacle_two_two_two_two, '@');
+		update_Obstacle(obstacle_three_three_three_three, '$');
+		update_Obstacle(obstacle_four_four_four_four, 'U');
+		update_Obstacle(obstacle_five_five_five_five, '$');
+		update_Obstacle(obstacle_six_six_six_six, 'R');
+		update_Obstacle(obstacle_seven_seven_seven_seven, '@');
+		update_Obstacle(obstacle_eight_eight_eight_eight, 'U');
+		
 
 		
 		// Print the board 
@@ -781,6 +832,60 @@ restart:
 // Collision detection ---------------------------------------------------------------------------
 
 
+		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
+			running = false;
+		}
+		
+		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
+			running = false;
+		}
+		
+		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
+			running = false;
+		}
+		
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
 			running = false;
 		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
