@@ -217,6 +217,8 @@ void init_map(){
 	short int *logPtr = (short int *) log_map.pixel_data;
 	short int *lPfPtr = (short int *) frogPlusLog_map.pixel_data;
 	short int *rArrowPtr = (short int *) rightArrow_map.pixel_data;
+	short int *car1Ptr = (short int *) car1_map.pixel_data;
+	short int *car2Ptr = (short int *) car2_map.pixel_data;
 	
 	Pixel *pixel;
 	pixel = malloc(sizeof(pixel));
@@ -274,6 +276,14 @@ void init_map(){
 					pixel->y = y;
 				}else if(board[ycount][xcount+5] == 'R'){
 					pixel->color = rArrowPtr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == '%'){
+					pixel->color = car1Ptr[i]; 
+					pixel->x = x;
+					pixel->y = y;
+				}else if(board[ycount][xcount+5] == '$'){
+					pixel->color = car2Ptr[i]; 
 					pixel->x = x;
 					pixel->y = y;
 				}else if(board[ycount][xcount+5] == '/'){
@@ -602,8 +612,8 @@ restart:
 	struct Obstacle obstacle_two_two = init_Obstacle(0, 13, '%'); // left to right, row 17
 	struct Obstacle obstacle_three_three = init_Obstacle(46, 12, '$'); // right to left, row 18
 	struct Obstacle obstacle_four_four = init_Obstacle(0, 11, '%'); // left to right, row 19
-	struct Obstacle obstacle_five_five = init_Obstacle(0, 15, '$'); //left to right, row 16
-	struct Obstacle obstacle_six_six = init_Obstacle(0, 14, '%'); // left to right, row 17
+	struct Obstacle obstacle_five_five = init_Obstacle(0, 14, '$'); //left to right, row 16
+	struct Obstacle obstacle_six_six = init_Obstacle(0, 13, '%'); // left to right, row 17
 	struct Obstacle obstacle_seven_seven = init_Obstacle(46, 12, '$'); // right to left, row 18
 	struct Obstacle obstacle_eight_eight = init_Obstacle(4, 11, '%'); // left to right, row 18
 	
