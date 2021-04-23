@@ -25,6 +25,7 @@
 #include "car2.h"
 #include "gameOver.h"
 #include "gameMenu.h"
+#include "gameWin.h"
 
 
 // Structure definitions
@@ -166,52 +167,6 @@ void update_Obstacle(struct Obstacle obstacle, char representation) {
 
 // Transporter methods -------------------------------------------------------------------------
 
-struct Transporter init_Transporter(int positionX_par, int positionY_par) {
-	struct Transporter transporter;
-	transporter.locationX = positionX_par;
-	transporter.locationY = positionY_par;
-	board[transporter.locationY][transporter.locationX] = 'U';
-	return transporter;
-}
-
-// Move method
-struct Transporter move_Transporter(struct Transporter transporter_par, int up, int down, int left, int right) {
-	if (up > 0) {
-	board[transporter_par.locationY][transporter_par.locationX] = '/';
-	transporter_par.locationY += up;
-		if (playerOnLog) {
-			playerOne.locationY += up;
-		}
-	} else if (down > 0) {
-		board[transporter_par.locationY][transporter_par.locationX] = '/';
-		transporter_par.locationY -= down;
-		if (playerOnLog) {
-			playerOne.locationY -= down;
-		}
-	} else if (left > 0) {
-		board[transporter_par.locationY][transporter_par.locationX] = '/';
-		transporter_par.locationX -= left;
-		if (playerOnLog) {
-			playerOne.locationX -= left;
-		}
-	} else if (right > 0) {
-		board[transporter_par.locationY][transporter_par.locationX] = '/';
-		transporter_par.locationX += right;
-		if (playerOnLog) {
-			playerOne.locationX += right;
-		}
-	 }
-	return transporter_par;
-}
-
-// Update method
-void update_Transporter(struct Transporter transporter) {
-	if (playerOnLog) {
-		board[transporter.locationY][transporter.locationX] = 'O';
-	} else if (!playerOnLog) {
-		board[transporter.locationY][transporter.locationX] = 'U';
-	}
-}
 
 // Graphics methods ---------------------------------------------------------------------------
 
@@ -491,6 +446,34 @@ void drawGameOver(){
 	
 }
 
+void drawGameWin(){
+	/* initialize + get FBS */
+	fbstruct = initFbInfo();
+	
+	short int *gameWinPtr=(short int *) gameWin_map.pixel_data;
+	
+	/* initialize a pixel */
+	Pixel *pixel;
+	pixel = malloc(sizeof(Pixel));
+	int i=0;
+	for (int y = 0; y < 672; y++)//30 is the image height
+	{
+		for (int x = 0; x < 1280; x++) // 30 is image width
+		{	
+				pixel->color = gameWinPtr[i]; 
+				pixel->x = x;
+				pixel->y = y;
+				drawPixel(pixel);
+				i++;
+		}
+	}
+	/* free pixel's allocated memory */
+	free(pixel);
+	pixel = NULL;
+	munmap(fbstruct.fptr, fbstruct.screenSize);
+	
+}
+
 void mainMenu(){
 	
 	int selector = 0;
@@ -589,11 +572,7 @@ restart:
 	struct Obstacle obstacle_eight = init_Obstacle(4, 19, 'R'); // left to right, row 18
 
 	
-	// Initialize the transporters
-	struct Transporter transporter_one = init_Transporter(4, 9); // left to right, row 9
-	struct Transporter transporter_two = init_Transporter(45, 8); // right to left, row 8
-	struct Transporter transporter_three = init_Transporter(4, 7); // left to right, row 7
-	struct Transporter transporter_four = init_Transporter(45, 6); // right to left, row 6
+	
 	
 	// Initialize sensitivity counter
 	int sensitivity = 0;
@@ -728,77 +707,6 @@ restart:
 		
 // Transporter movement ---------------------------------------------------------------------------
 
-		// Alter the 1st transporter's position (left to right)
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX >= 45) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_one.locationX >= 45) {
-				int delay_Selector = rand() % 5;
-				transporter_one.locationX = 0 + delay_Selector;
-			} else {
-				transporter_one = move_Transporter(transporter_one, 0, 0, 0, 1);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_one.locationY;
-				}
-			}
-		}
-		
-		// Alter the 2nd transporter's position (right to left)
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX <= 5) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_two.locationX <= 0) {
-				int delay_Selector = rand() % 5;
-				transporter_two.locationX = 45 + delay_Selector;
-			} else {
-				transporter_two = move_Transporter(transporter_two, 0, 0, 1, 0);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_two.locationY;
-				}
-			}
-		}
-		
-		// Alter the 3rd transporter's position (left to right)
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX >= 45) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_three.locationX >= 45) {
-				int delay_Selector = rand() % 5;
-				transporter_three.locationX = 0 + delay_Selector;
-			} else {
-				transporter_three = move_Transporter(transporter_three, 0, 0, 0, 1);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_three.locationY;
-				}
-			}
-		}
-		
-		// Alter the 4th transporter's position (right to left)
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX <= 5) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_four.locationX <= 0) {
-				int delay_Selector = rand() % 5;
-				transporter_four.locationX = 45 + delay_Selector;
-			} else {
-				transporter_four = move_Transporter(transporter_four, 0, 0, 1, 0);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_four.locationY;
-				}
-			}
-		}
 
 // Update components ------------------------------------------------------------------------------
 
@@ -815,11 +723,7 @@ restart:
 		update_Obstacle(obstacle_seven, '@');
 		update_Obstacle(obstacle_eight, 'R');
 
-		// Update the transporter
-		update_Transporter(transporter_one);
-		update_Transporter(transporter_two);
-		update_Transporter(transporter_three);
-		update_Transporter(transporter_four);
+		
 		// Print the board 
 		//print_Board(board); // for text-based
 		
@@ -853,24 +757,18 @@ restart:
 			goto restart;
 		}
 		
-		// Check if player on log
-		if (playerOne.locationX == transporter_one.locationX && playerOne.locationY == transporter_one.locationY) {
-			playerOnLog = true;
-		} else {
-			playerOnLog = false;
-		}
+		
 
 // Final checks ----------------------------------------------------------------------------------
 		
 		// Check for water collision
-		if (currentChar == '/') {
-			running = false;
-			printf ("You drowned!\n");
-		}
+		
 				
 		// Check for win
 		if (playerOne.locationY == 0) {
 			printf("You win!\n");
+			drawGameWin();
+			delay(1000);
 			running = false;
 		}
 		
