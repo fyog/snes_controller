@@ -30,7 +30,6 @@
 
 // Structure definitions
 struct Player {
-	//char* name;
 	int locationX;
 	int locationY;
 	int lives;
@@ -171,7 +170,8 @@ struct Obstacle move_Obstacle(struct Obstacle obstacle, int up, int down, int le
 
 // Set's obstacle lane position
 //
-// arguments
+// argument(s): struct Obstacle obstacle, int sensitivity, int speed, bool direction (true is right to left, false left to right)
+// returns: struct Obstacle obstacle
 struct Obstacle set_Position(struct Obstacle obstacle, int sensitivity, int speed, bool direction){
 	if (direction) {
 		if (sensitivity % speed == 0) {
@@ -197,14 +197,13 @@ struct Obstacle set_Position(struct Obstacle obstacle, int sensitivity, int spee
 	return obstacle;
 }
 		
-
 // Update method
+//
+// argument(s): struct Obstacle obstacle, char representation
+// returns: nothing
 void update_Obstacle(struct Obstacle obstacle, char representation) {
 	board[obstacle.locationY][obstacle.locationX] = representation;
 }	
-
-// Transporter methods -------------------------------------------------------------------------
-
 
 // Graphics methods ---------------------------------------------------------------------------
 
@@ -591,7 +590,6 @@ void gameMenu(){
 // returns: nothing
 int main() {
 	
-//
 	// Create running boolean
 	running = true;
 
@@ -658,8 +656,6 @@ restart:
 	struct Obstacle obstacle_six_six_six_six = init_Obstacle(0, 3, 'U'); // left to right, row 3
 	struct Obstacle obstacle_seven_seven_seven_seven = init_Obstacle(46, 2, 'U'); // right to left, row 2
 	struct Obstacle obstacle_eight_eight_eight_eight = init_Obstacle(4, 1, 'U'); // left to right, row 1
-	
-	
 	
 	// Initialize sensitivity counter
 	int sensitivity = 0;
