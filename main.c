@@ -33,6 +33,7 @@ struct Player {
 	//char* name;
 	int locationX;
 	int locationY;
+	int lives;
 };
 
 struct Obstacle {
@@ -67,9 +68,10 @@ int lives;
 //
 // argument(s): x location of the player, y location of the player
 // returns: nothing
-void init_Player(int locationX_par, int locationY_par ) {
+void init_Player(int locationX_par, int locationY_par) {
 	//char f; 
 	//playerOne.name = &f;
+	playerOne.lives = 4;
 	playerOne.locationX = locationX_par;
 	playerOne.locationY = locationY_par;
 	board[locationY_par][locationX_par] = 'X';
@@ -191,9 +193,6 @@ void update_Obstacle(struct Obstacle obstacle, char representation) {
 	board[obstacle.locationY][obstacle.locationX] = representation;
 }	
 
-// Transporter methods -------------------------------------------------------------------------
-
-
 // Graphics methods ---------------------------------------------------------------------------
 
 /* Draw a pixel */
@@ -217,8 +216,6 @@ void init_map(){
 	short int *logPtr = (short int *) log_map.pixel_data;
 	short int *lPfPtr = (short int *) frogPlusLog_map.pixel_data;
 	short int *rArrowPtr = (short int *) rightArrow_map.pixel_data;
-	short int *car1Ptr = (short int *) car1_map.pixel_data;
-	short int *car2Ptr = (short int *) car2_map.pixel_data;
 	
 	Pixel *pixel;
 	pixel = malloc(sizeof(pixel));
@@ -276,14 +273,6 @@ void init_map(){
 					pixel->y = y;
 				}else if(board[ycount][xcount+5] == 'R'){
 					pixel->color = rArrowPtr[i]; 
-					pixel->x = x;
-					pixel->y = y;
-				}else if(board[ycount][xcount+5] == '%'){
-					pixel->color = car1Ptr[i]; 
-					pixel->x = x;
-					pixel->y = y;
-				}else if(board[ycount][xcount+5] == '$'){
-					pixel->color = car2Ptr[i]; 
 					pixel->x = x;
 					pixel->y = y;
 				}else if(board[ycount][xcount+5] == '/'){
@@ -409,7 +398,8 @@ void draw_mainMenu(int selected){
 	munmap(fbstruct.fptr, fbstruct.screenSize);
 }
 
-void draw_gameMenu(int selected){
+void draw_gameMenu(int selected) {
+	
 	/* initialize + get FBS */
 	fbstruct = initFbInfo();
 	
@@ -612,8 +602,8 @@ restart:
 	struct Obstacle obstacle_two_two = init_Obstacle(0, 13, '%'); // left to right, row 17
 	struct Obstacle obstacle_three_three = init_Obstacle(46, 12, '$'); // right to left, row 18
 	struct Obstacle obstacle_four_four = init_Obstacle(0, 11, '%'); // left to right, row 19
-	struct Obstacle obstacle_five_five = init_Obstacle(0, 14, '$'); //left to right, row 16
-	struct Obstacle obstacle_six_six = init_Obstacle(0, 13, '%'); // left to right, row 17
+	struct Obstacle obstacle_five_five = init_Obstacle(0, 15, '$'); //left to right, row 16
+	struct Obstacle obstacle_six_six = init_Obstacle(0, 14, '%'); // left to right, row 17
 	struct Obstacle obstacle_seven_seven = init_Obstacle(46, 12, '$'); // right to left, row 18
 	struct Obstacle obstacle_eight_eight = init_Obstacle(4, 11, '%'); // left to right, row 18
 	
@@ -831,87 +821,85 @@ restart:
 		update_Obstacle(obstacle_seven_seven_seven_seven, '@');
 		update_Obstacle(obstacle_eight_eight_eight_eight, 'U');
 		
-
-		// Print the board 
-		//print_Board(board); // for text-based
-		
 		//init_map();
 		//draw_map(); // for graphics
 		init_map();
 		
 // Collision detection ---------------------------------------------------------------------------
 	// NOTE: brute force af
+		if (sensitivity % 40) {
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		}
 		
 		if (playerOne.locationX == obstacle_one_one.locationX && playerOne.locationY == obstacle_one_one.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_two_two.locationX && playerOne.locationY == obstacle_two_two.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_three_three.locationX && playerOne.locationY == obstacle_three_three.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_four_four.locationX && playerOne.locationY == obstacle_four_four.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_five_five.locationX && playerOne.locationY == obstacle_five_five.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_six_six.locationX && playerOne.locationY == obstacle_six_six.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		}
 		
 		if (playerOne.locationX == obstacle_one_one_one.locationX && playerOne.locationY == obstacle_one_one_one.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_two_two_two.locationX && playerOne.locationY == obstacle_two_two_two.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_three_three_three.locationX && playerOne.locationY == obstacle_three_three_three.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_four_four_four.locationX && playerOne.locationY == obstacle_four_four_four.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_five_five_five.locationX && playerOne.locationY == obstacle_five_five_five.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_six_six_six.locationX && playerOne.locationY == obstacle_six_six_six.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_seven_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven_seven.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_eight_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight_eight.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		}
 		
 		if (playerOne.locationX == obstacle_one_one_one_one.locationX && playerOne.locationY == obstacle_one_one_one_one.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_two_two_two_two.locationX && playerOne.locationY == obstacle_two_two_two_two.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_three_three_three_three.locationX && playerOne.locationY == obstacle_three_three_three_three.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_four_four_four_four.locationX && playerOne.locationY == obstacle_four_four_four_four.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_five_five_five_five.locationX && playerOne.locationY == obstacle_five_five_five_five.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_six_six_six_six.locationX && playerOne.locationY == obstacle_six_six_six_six.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_seven_seven_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven_seven_seven.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_eight_eight_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight_eight_eight.locationY) {
-			running = false;
+			playerOne.lives -= 1;
 		}
+	}
 		if(running == false){
 			drawGameOver();
 			delay(1000);
@@ -922,9 +910,12 @@ restart:
 
 // Final checks ----------------------------------------------------------------------------------
 		
-		// Check for water collision
+		// Check for zero lives
+		if (playerOne.lives <= 0) {
+			printf("You are out of lives!");
+			running = false;
+		}
 		
-				
 		// Check for win
 		if (playerOne.locationY == 0) {
 			printf("You win!\n");
