@@ -136,7 +136,8 @@ void right(int currentX) {
 
 // Initialize obstacle
 //
-// argument(s):
+// argument(s): int positionX_par, int positionY_par, char representation
+// returns: struct Obstacle obstacle
 struct Obstacle init_Obstacle(int positionX_par, int positionY_par, char representation) {
 	struct Obstacle obstacle;
 	obstacle.locationX = positionX_par;
@@ -146,7 +147,10 @@ struct Obstacle init_Obstacle(int positionX_par, int positionY_par, char represe
 }
 
 
-// Move method
+// Move obstacle method
+//
+// argument(s): struct Obstacle obstacle, int up, int down, int left, int right
+// returns: struct Obstacle obstacle
 struct Obstacle move_Obstacle(struct Obstacle obstacle, int up, int down, int left, int right) {
 	
 	if (up == true) {
@@ -164,6 +168,10 @@ struct Obstacle move_Obstacle(struct Obstacle obstacle, int up, int down, int le
 	}
 	return obstacle;
 }
+
+// Set's obstacle lane position
+//
+// arguments
 struct Obstacle set_Position(struct Obstacle obstacle, int sensitivity, int speed, bool direction){
 	if (direction) {
 		if (sensitivity % speed == 0) {
@@ -864,75 +872,75 @@ restart:
 		
 		if (sensitivity % 40) {
 			if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		}
 		
 		if (playerOne.locationX == obstacle_one_one.locationX && playerOne.locationY == obstacle_one_one.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_two_two.locationX && playerOne.locationY == obstacle_two_two.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_three_three.locationX && playerOne.locationY == obstacle_three_three.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_four_four.locationX && playerOne.locationY == obstacle_four_four.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_five_five.locationX && playerOne.locationY == obstacle_five_five.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_six_six.locationX && playerOne.locationY == obstacle_six_six.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		}
 		
 		if (playerOne.locationX == obstacle_one_one_one.locationX && playerOne.locationY == obstacle_one_one_one.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_two_two_two.locationX && playerOne.locationY == obstacle_two_two_two.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_three_three_three.locationX && playerOne.locationY == obstacle_three_three_three.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_four_four_four.locationX && playerOne.locationY == obstacle_four_four_four.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_five_five_five.locationX && playerOne.locationY == obstacle_five_five_five.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_six_six_six.locationX && playerOne.locationY == obstacle_six_six_six.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_seven_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven_seven.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_eight_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight_eight.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		}
 		
 		if (playerOne.locationX == obstacle_one_one_one_one.locationX && playerOne.locationY == obstacle_one_one_one_one.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_two_two_two_two.locationX && playerOne.locationY == obstacle_two_two_two_two.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_three_three_three_three.locationX && playerOne.locationY == obstacle_three_three_three_three.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_four_four_four_four.locationX && playerOne.locationY == obstacle_four_four_four_four.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_five_five_five_five.locationX && playerOne.locationY == obstacle_five_five_five_five.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_six_six_six_six.locationX && playerOne.locationY == obstacle_six_six_six_six.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_seven_seven_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven_seven_seven.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		} else if (playerOne.locationX == obstacle_eight_eight_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight_eight_eight.locationY) {
-			lives -= 1;
+			playerOne.lives -= 1;
 		}
 	}
 		if(running == false){
