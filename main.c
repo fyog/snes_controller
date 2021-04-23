@@ -30,7 +30,6 @@
 
 // Structure definitions
 struct Player {
-	//char* name;
 	int locationX;
 	int locationY;
 	int lives;
@@ -171,7 +170,8 @@ struct Obstacle move_Obstacle(struct Obstacle obstacle, int up, int down, int le
 
 // Set's obstacle lane position
 //
-// arguments
+// argument(s): struct Obstacle obstacle, int sensitivity, int speed, bool direction (true is right to left, false left to right)
+// returns: struct Obstacle obstacle
 struct Obstacle set_Position(struct Obstacle obstacle, int sensitivity, int speed, bool direction){
 	if (direction) {
 		if (sensitivity % speed == 0) {
@@ -197,14 +197,13 @@ struct Obstacle set_Position(struct Obstacle obstacle, int sensitivity, int spee
 	return obstacle;
 }
 		
-
 // Update method
+//
+// argument(s): struct Obstacle obstacle, char representation
+// returns: nothing
 void update_Obstacle(struct Obstacle obstacle, char representation) {
 	board[obstacle.locationY][obstacle.locationX] = representation;
 }	
-
-// Transporter methods -------------------------------------------------------------------------
-
 
 // Graphics methods ---------------------------------------------------------------------------
 
@@ -325,8 +324,7 @@ void init_map(){
 
 	
 }
-/*
-//block of code for drawing blocks
+
 void block_draw(int mul, int mul2, int colour){
 	fbstruct = initFbInfo();
 	
@@ -348,14 +346,13 @@ void block_draw(int mul, int mul2, int colour){
 				drawPixel(pixel);
 		}
 	}
-	
+	/* free pixel's allocated memory */
 	free(pixel);
 	pixel = NULL;
 	munmap(fbstruct.fptr, fbstruct.screenSize);
 	
 }
-*/
-//creates a map for drawing the board
+
 void draw_map(){
 	
 	for(int i = 0; i < 21; i++){
@@ -382,9 +379,6 @@ void draw_map(){
 	
 }
 
-//draws the main menu 
-//void function
-//draws the selector too
 void draw_mainMenu(int selected){
 	/* initialize + get FBS */
 	fbstruct = initFbInfo();
@@ -430,8 +424,6 @@ void draw_mainMenu(int selected){
 	munmap(fbstruct.fptr, fbstruct.screenSize);
 }
 
-//void function
-//draws the game menu 
 void draw_gameMenu(int selected){
 	/* initialize + get FBS */
 	fbstruct = initFbInfo();
@@ -483,8 +475,6 @@ void *count(void *a){
 }
 */
 
-
-//draws the game over screen
 void drawGameOver(){
 	/* initialize + get FBS */
 	fbstruct = initFbInfo();
@@ -513,8 +503,6 @@ void drawGameOver(){
 	
 }
 
-//void method
-//prints the game win screen
 void drawGameWin(){
 	/* initialize + get FBS */
 	fbstruct = initFbInfo();
@@ -543,8 +531,6 @@ void drawGameWin(){
 	
 }
 
-//void
-//prints the main menu
 void mainMenu(){
 	
 	int selector = 0;
@@ -568,8 +554,6 @@ void mainMenu(){
 	
 }
 
-//void
-//prints the game menu and does the selections
 void gameMenu(){
 	int selector = 0;
 	
@@ -606,7 +590,6 @@ void gameMenu(){
 // returns: nothing
 int main() {
 	
-//
 	// Create running boolean
 	running = true;
 
@@ -674,8 +657,6 @@ restart:
 	struct Obstacle obstacle_seven_seven_seven_seven = init_Obstacle(46, 2, 'U'); // right to left, row 2
 	struct Obstacle obstacle_eight_eight_eight_eight = init_Obstacle(4, 1, 'U'); // left to right, row 1
 	
-	
-	
 	// Initialize sensitivity counter
 	int sensitivity = 0;
 	
@@ -719,8 +700,6 @@ restart:
 		int timeElapsed = currentTime - startTime;
 		int timeRemaining = 90 - timeElapsed;
 		//printf("%d s\n", timeRemaining);
-		
-		//for the value packs which show up blue
 		if(timeElapsed == 25 || timeElapsed == 45){
 			//struct Obstacle valuePack = 
 			init_Obstacle(20, 15, 'P');
@@ -969,15 +948,7 @@ restart:
 		
 
 // Final checks ----------------------------------------------------------------------------------
-		
-		
-		if(playerOne.lives <= 0){
-			running = false;
-			drawGameOver();
-			delay(1000);
-			printf("you ran out of lives\n");
-		}
-		
+				
 		// Check for win
 		if (playerOne.locationY == 0) {
 			printf("You win!\n");
