@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <sys/mman.h>
+#include "wiringPi.h"
 #include "framebuffer.h"
 #include "controller_driver.h"
 #include "board.h"
@@ -20,6 +21,11 @@
 #include "frogPlusLog.h"
 #include "rArrow.h"
 #include "mainMenu.h"
+#include "car1.h"
+#include "car2.h"
+#include "gameOver.h"
+#include "gameMenu.h"
+
 
 // Structure definitions
 struct Player {
@@ -197,46 +203,6 @@ struct Transporter move_Transporter(struct Transporter transporter_par, int up, 
 	 }
 	return transporter_par;
 }
-
-struct Transporter set_Motion (int sensitivity, struct Transporter transporter_one, bool direction) {
-	if (direction){
-		if (sensitivity % 10 == 0) {
-			if (playerOne.locationX >= 45) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_one.locationX >= 45) {
-				int delay_Selector = rand() % 5;
-				transporter_one.locationX = 0 + delay_Selector;
-			} else {
-				transporter_one = move_Transporter(transporter_one, 0, 0, 0, 1);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_one.locationY;
-				}
-			}
-		}
-	} else if (!direction) {
-	if (sensitivity % 10 == 0) {
-			if (playerOne.locationX <= 0) {
-				printf("You fell off the edge of the map!");
-				running = false;
-			}
-			if (transporter_one.locationX <= 0) {
-				int delay_Selector = rand() % 5;
-				transporter_one.locationX = 45 + delay_Selector;
-			} else {
-				transporter_one = move_Transporter(transporter_one, 0, 0, 1, 0);
-				if (playerOnLog) {
-				board[playerOne.locationY][playerOne.locationX] = '-';
-				playerOne.locationY = transporter_one.locationY;
-				}
-			}
-		}
-	}
-	return transporter_one;
-}
-
 
 // Update method
 void update_Transporter(struct Transporter transporter) {
@@ -452,6 +418,79 @@ void draw_mainMenu(int selected){
 	munmap(fbstruct.fptr, fbstruct.screenSize);
 }
 
+void draw_gameMenu(int selected){
+	/* initialize + get FBS */
+	fbstruct = initFbInfo();
+	
+	short int *gameMenuPtr=(short int *) gameMenu_map.pixel_data;
+	
+	/* initialize a pixel */
+	Pixel *pixel;
+	pixel = malloc(sizeof(Pixel));
+	int i=0;
+	for (int y = 168; y < 504; y++)//30 is the image height
+	{
+		for (int x = 320; x < 960; x++) // 30 is image width
+		{	
+				pixel->color = gameMenuPtr[i]; 
+				pixel->x = x;
+				pixel->y = y;
+				drawPixel(pixel);
+				i++;
+		}
+	}
+	i = 0;
+	int ystart = 280;
+	int yend = 312;
+	if(selected == 1){
+		ystart = 350;
+		yend = 382;
+	}
+	for (int y = ystart; y < yend; y++)//30 is the image height
+	{
+		for (int x = 468; x < 500; x++) // 30 is image width
+		{	
+				pixel->color = 0x00FF; 
+				pixel->x = x;
+				pixel->y = y;
+				drawPixel(pixel);
+				i++;
+		}
+	}
+	/* free pixel's allocated memory */
+	free(pixel);
+	pixel = NULL;
+	munmap(fbstruct.fptr, fbstruct.screenSize);
+}
+
+void drawGameOver(){
+	/* initialize + get FBS */
+	fbstruct = initFbInfo();
+	
+	short int *gameOverPtr=(short int *) gameOver_map.pixel_data;
+	
+	/* initialize a pixel */
+	Pixel *pixel;
+	pixel = malloc(sizeof(Pixel));
+	int i=0;
+	for (int y = 0; y < 672; y++)//30 is the image height
+	{
+		for (int x = 0; x < 1280; x++) // 30 is image width
+		{	
+				pixel->color = gameOverPtr[i]; 
+				pixel->x = x;
+				pixel->y = y;
+				drawPixel(pixel);
+				i++;
+		}
+	}
+	/* free pixel's allocated memory */
+	free(pixel);
+	pixel = NULL;
+	munmap(fbstruct.fptr, fbstruct.screenSize);
+	
+}
+
 void mainMenu(){
 	
 	int selector = 0;
@@ -474,6 +513,35 @@ void mainMenu(){
 	}
 	
 }
+
+void gameMenu(){
+	int selector = 0;
+	
+	delay(500);
+	
+	while(1){
+		int* buttons_arr = read_SNES();
+		if(buttons_arr[4] == 0){
+			selector = 0;
+		}else if(buttons_arr[5] == 0){
+			selector = 1;
+		}
+		draw_gameMenu(selector);
+		if(selector == 0 && buttons_arr[8] == 0){
+			running = false;
+			break;
+		}else if(selector == 1 && buttons_arr[8] == 0){
+			//printf("Thanks for playing!\n");
+			running = false;
+			break;
+		}else if(buttons_arr[3] == 0){
+			break;
+		}
+	}
+	
+	
+}
+
 //
 
 // Main method  --------------------------------------------------------------------------------
@@ -484,9 +552,9 @@ void mainMenu(){
 // returns: nothing
 int main() {
 	
-
+//
 	// Create running boolean
-	bool running = true;
+	running = true;
 
 restart: 
 	running = true;
@@ -560,7 +628,8 @@ restart:
 				right(playerOne.locationX);
 			}
 			if (buttons_arr[3] == 0) {
-				running = false; // bring up menu eventually
+				//running = false; // bring up menu eventually
+				gameMenu();
 			}
 		}
 		
@@ -658,12 +727,78 @@ restart:
 		}
 		
 // Transporter movement ---------------------------------------------------------------------------
-	
-		transporter_one = set_Motion(sensitivity, transporter_one, true);
-		transporter_two = set_Motion(sensitivity, transporter_one, true);
-		transporter_three = set_Motion(sensitivity, transporter_one, true);
-		transporter_four = set_Motion(sensitivity, transporter_one, true);
 
+		// Alter the 1st transporter's position (left to right)
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX >= 45) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_one.locationX >= 45) {
+				int delay_Selector = rand() % 5;
+				transporter_one.locationX = 0 + delay_Selector;
+			} else {
+				transporter_one = move_Transporter(transporter_one, 0, 0, 0, 1);
+				if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_one.locationY;
+				}
+			}
+		}
+		
+		// Alter the 2nd transporter's position (right to left)
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX <= 5) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_two.locationX <= 0) {
+				int delay_Selector = rand() % 5;
+				transporter_two.locationX = 45 + delay_Selector;
+			} else {
+				transporter_two = move_Transporter(transporter_two, 0, 0, 1, 0);
+				if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_two.locationY;
+				}
+			}
+		}
+		
+		// Alter the 3rd transporter's position (left to right)
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX >= 45) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_three.locationX >= 45) {
+				int delay_Selector = rand() % 5;
+				transporter_three.locationX = 0 + delay_Selector;
+			} else {
+				transporter_three = move_Transporter(transporter_three, 0, 0, 0, 1);
+				if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_three.locationY;
+				}
+			}
+		}
+		
+		// Alter the 4th transporter's position (right to left)
+		if (sensitivity % 10 == 0) {
+			if (playerOne.locationX <= 5) {
+				printf("You fell off the edge of the map!");
+				running = false;
+			}
+			if (transporter_four.locationX <= 0) {
+				int delay_Selector = rand() % 5;
+				transporter_four.locationX = 45 + delay_Selector;
+			} else {
+				transporter_four = move_Transporter(transporter_four, 0, 0, 1, 0);
+				if (playerOnLog) {
+				board[playerOne.locationY][playerOne.locationX] = '-';
+				playerOne.locationY = transporter_four.locationY;
+				}
+			}
+		}
 
 // Update components ------------------------------------------------------------------------------
 
@@ -713,6 +848,8 @@ restart:
 			running = false;
 		}
 		if(running == false){
+			drawGameOver();
+			delay(1000);
 			goto restart;
 		}
 		
@@ -751,3 +888,4 @@ restart:
 	printf("Successfully exited.\n"); // on exit
 
 }
+
