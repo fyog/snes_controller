@@ -59,6 +59,7 @@ bool playerOnLog;
 int drawColours[21][40];
 char currentChar;
 bool running = true;
+int lives;
 
 // Player methods -------------------------------------------------------------------------------
 
@@ -171,7 +172,7 @@ struct Obstacle set_Position(struct Obstacle obstacle, int sensitivity, int spee
 			}
 		}
 	} else if (!direction) {
-		if (sensitivity % 10 == 0) {
+		if (sensitivity % speed == 0) {
 			if (obstacle.locationX >= 45) {
 				board[obstacle.locationY][obstacle.locationX] = '-';
 				int delay_Selector = rand() % 5;
@@ -617,14 +618,14 @@ restart:
 	struct Obstacle obstacle_eight_eight_eight = init_Obstacle(4, 6, 'U'); // left to right, row 6
 	
 	// Level 4
-	struct Obstacle obstacle_one_one_one_one = init_Obstacle(46, 4, 'U'); // right to left, row 9
-	struct Obstacle obstacle_two_two_two_two = init_Obstacle(0, 3, 'U'); // left to right, row 8
-	struct Obstacle obstacle_three_three_three_three = init_Obstacle(46,2, 'U'); // right to left, row 7
-	struct Obstacle obstacle_four_four_four_four = init_Obstacle(0, 1, 'U'); // left to right, row 6
-	struct Obstacle obstacle_five_five_five_five = init_Obstacle(0, 4, 'U'); //left to right, row 9
-	struct Obstacle obstacle_six_six_six_six = init_Obstacle(0, 3, 'U'); // left to right, row 8 
-	struct Obstacle obstacle_seven_seven_seven_seven = init_Obstacle(46, 2, 'U'); // right to left, row 7
-	struct Obstacle obstacle_eight_eight_eight_eight = init_Obstacle(4, 1, 'U'); // left to right, row 6
+	struct Obstacle obstacle_one_one_one_one = init_Obstacle(46, 4, 'U'); // right to left, row 4
+	struct Obstacle obstacle_two_two_two_two = init_Obstacle(0, 3, 'U'); // left to right, row 3
+	struct Obstacle obstacle_three_three_three_three = init_Obstacle(46,2, 'U'); // right to left, row 2
+	struct Obstacle obstacle_four_four_four_four = init_Obstacle(0, 1, 'U'); // left to right, row 1
+	struct Obstacle obstacle_five_five_five_five = init_Obstacle(0, 4, 'U'); //left to right, row 4
+	struct Obstacle obstacle_six_six_six_six = init_Obstacle(0, 3, 'U'); // left to right, row 3
+	struct Obstacle obstacle_seven_seven_seven_seven = init_Obstacle(46, 2, 'U'); // right to left, row 2
+	struct Obstacle obstacle_eight_eight_eight_eight = init_Obstacle(4, 1, 'U'); // left to right, row 1
 	
 	
 	
@@ -821,7 +822,6 @@ restart:
 		update_Obstacle(obstacle_eight_eight_eight_eight, 'U');
 		
 
-		
 		// Print the board 
 		//print_Board(board); // for text-based
 		
@@ -830,8 +830,7 @@ restart:
 		init_map();
 		
 // Collision detection ---------------------------------------------------------------------------
-
-
+	// NOTE: brute force af
 		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
 			running = false;
 		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
@@ -850,57 +849,57 @@ restart:
 			running = false;
 		}
 		
-		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
+		if (playerOne.locationX == obstacle_one_one.locationX && playerOne.locationY == obstacle_one_one.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
+		} else if (playerOne.locationX == obstacle_two_two.locationX && playerOne.locationY == obstacle_two_two.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
+		} else if (playerOne.locationX == obstacle_three_three.locationX && playerOne.locationY == obstacle_three_three.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
+		} else if (playerOne.locationX == obstacle_four_four.locationX && playerOne.locationY == obstacle_four_four.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
+		} else if (playerOne.locationX == obstacle_five_five.locationX && playerOne.locationY == obstacle_five_five.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
+		} else if (playerOne.locationX == obstacle_six_six.locationX && playerOne.locationY == obstacle_six_six.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
+		} else if (playerOne.locationX == obstacle_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
-			running = false;
-		}
-		
-		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
-			running = false;
-		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
-			running = false;
-		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
-			running = false;
-		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
-			running = false;
-		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
-			running = false;
-		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
-			running = false;
-		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
-			running = false;
-		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
+		} else if (playerOne.locationX == obstacle_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight.locationY) {
 			running = false;
 		}
 		
-		if (playerOne.locationX == obstacle_one.locationX && playerOne.locationY == obstacle_one.locationY) {
+		if (playerOne.locationX == obstacle_one_one_one.locationX && playerOne.locationY == obstacle_one_one_one.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_two.locationX && playerOne.locationY == obstacle_two.locationY) {
+		} else if (playerOne.locationX == obstacle_two_two_two.locationX && playerOne.locationY == obstacle_two_two_two.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_three.locationX && playerOne.locationY == obstacle_three.locationY) {
+		} else if (playerOne.locationX == obstacle_three_three_three.locationX && playerOne.locationY == obstacle_three_three_three.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_four.locationX && playerOne.locationY == obstacle_four.locationY) {
+		} else if (playerOne.locationX == obstacle_four_four_four.locationX && playerOne.locationY == obstacle_four_four_four.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_five.locationX && playerOne.locationY == obstacle_five.locationY) {
+		} else if (playerOne.locationX == obstacle_five_five_five.locationX && playerOne.locationY == obstacle_five_five_five.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_six.locationX && playerOne.locationY == obstacle_six.locationY) {
+		} else if (playerOne.locationX == obstacle_six_six_six.locationX && playerOne.locationY == obstacle_six_six_six.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_seven.locationX && playerOne.locationY == obstacle_seven.locationY) {
+		} else if (playerOne.locationX == obstacle_seven_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven_seven.locationY) {
 			running = false;
-		} else if (playerOne.locationX == obstacle_eight.locationX && playerOne.locationY == obstacle_eight.locationY) {
+		} else if (playerOne.locationX == obstacle_eight_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight_eight.locationY) {
+			running = false;
+		}
+		
+		if (playerOne.locationX == obstacle_one_one_one_one.locationX && playerOne.locationY == obstacle_one_one_one_one.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_two_two_two_two.locationX && playerOne.locationY == obstacle_two_two_two_two.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_three_three_three_three.locationX && playerOne.locationY == obstacle_three_three_three_three.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_four_four_four_four.locationX && playerOne.locationY == obstacle_four_four_four_four.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_five_five_five_five.locationX && playerOne.locationY == obstacle_five_five_five_five.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_six_six_six_six.locationX && playerOne.locationY == obstacle_six_six_six_six.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_seven_seven_seven_seven.locationX && playerOne.locationY == obstacle_seven_seven_seven_seven.locationY) {
+			running = false;
+		} else if (playerOne.locationX == obstacle_eight_eight_eight_eight.locationX && playerOne.locationY == obstacle_eight_eight_eight_eight.locationY) {
 			running = false;
 		}
 		if(running == false){
